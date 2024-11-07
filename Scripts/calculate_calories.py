@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Load the Nutrition Data from the CSV file
-nutrition_df = pd.read_csv('Nutrition.csv')
+nutrition_df = pd.read_csv('NutritionCompressed.csv', compression='gzip')
 
 def calculate_total_calories(food_names, servings):
     total_calories = 0
