@@ -1,0 +1,1490 @@
+{
+  "Cycling, mountain bike, bmx": {
+    "calories_130lbs": 502.0,
+    "calories_155lbs": 598.0,
+    "calories_180lbs": 695.0,
+    "calories_205lbs": 791.0
+  },
+  "Cycling, <10 mph, leisure bicycling": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Cycling, >20 mph, racing": {
+    "calories_130lbs": 944.0,
+    "calories_155lbs": 1126.0,
+    "calories_180lbs": 1308.0,
+    "calories_205lbs": 1489.0
+  },
+  "Cycling, 10-11.9 mph, light": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Cycling, 12-13.9 mph, moderate": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Cycling, 14-15.9 mph, vigorous": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Cycling, 16-19 mph, very fast, racing": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Unicycling": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Stationary cycling, very light": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Stationary cycling, light": {
+    "calories_130lbs": 325.0,
+    "calories_155lbs": 387.0,
+    "calories_180lbs": 449.0,
+    "calories_205lbs": 512.0
+  },
+  "Stationary cycling, moderate": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Stationary cycling, vigorous": {
+    "calories_130lbs": 620.0,
+    "calories_155lbs": 739.0,
+    "calories_180lbs": 858.0,
+    "calories_205lbs": 977.0
+  },
+  "Stationary cycling, very vigorous": {
+    "calories_130lbs": 738.0,
+    "calories_155lbs": 880.0,
+    "calories_180lbs": 1022.0,
+    "calories_205lbs": 1163.0
+  },
+  "Calisthenics, vigorous, pushups, situps\u2026": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Calisthenics, light": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Circuit training, minimal rest": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Weight lifting, body building, vigorous": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Weight lifting, light workout": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Health club exercise": {
+    "calories_130lbs": 325.0,
+    "calories_155lbs": 387.0,
+    "calories_180lbs": 449.0,
+    "calories_205lbs": 512.0
+  },
+  "Stair machine": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Rowing machine, light": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Rowing machine, moderate": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Rowing machine, vigorous": {
+    "calories_130lbs": 502.0,
+    "calories_155lbs": 598.0,
+    "calories_180lbs": 695.0,
+    "calories_205lbs": 791.0
+  },
+  "Rowing machine, very vigorous": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Ski machine": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Aerobics, low impact": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Aerobics, high impact": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Aerobics, step aerobics": {
+    "calories_130lbs": 502.0,
+    "calories_155lbs": 598.0,
+    "calories_180lbs": 695.0,
+    "calories_205lbs": 791.0
+  },
+  "Aerobics, general": {
+    "calories_130lbs": 384.0,
+    "calories_155lbs": 457.0,
+    "calories_180lbs": 531.0,
+    "calories_205lbs": 605.0
+  },
+  "Jazzercise": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Stretching, hatha yoga": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Mild stretching": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Instructing aerobic class": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Water aerobics": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Ballet, twist, jazz, tap": {
+    "calories_130lbs": 266.0,
+    "calories_155lbs": 317.0,
+    "calories_180lbs": 368.0,
+    "calories_205lbs": 419.0
+  },
+  "Ballroom dancing, slow": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Ballroom dancing, fast": {
+    "calories_130lbs": 325.0,
+    "calories_155lbs": 387.0,
+    "calories_180lbs": 449.0,
+    "calories_205lbs": 512.0
+  },
+  "Running, 5 mph (12 minute mile)": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Running, 5.2 mph (11.5 minute mile)": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Running, 6 mph (10 min mile)": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Running, 6.7 mph (9 min mile)": {
+    "calories_130lbs": 649.0,
+    "calories_155lbs": 774.0,
+    "calories_180lbs": 899.0,
+    "calories_205lbs": 1024.0
+  },
+  "Running, 7 mph (8.5 min mile)": {
+    "calories_130lbs": 679.0,
+    "calories_155lbs": 809.0,
+    "calories_180lbs": 940.0,
+    "calories_205lbs": 1070.0
+  },
+  "Running, 7.5mph (8 min mile)": {
+    "calories_130lbs": 738.0,
+    "calories_155lbs": 880.0,
+    "calories_180lbs": 1022.0,
+    "calories_205lbs": 1163.0
+  },
+  "Running, 8 mph (7.5 min mile)": {
+    "calories_130lbs": 797.0,
+    "calories_155lbs": 950.0,
+    "calories_180lbs": 1103.0,
+    "calories_205lbs": 1256.0
+  },
+  "Running, 8.6 mph (7 min mile)": {
+    "calories_130lbs": 826.0,
+    "calories_155lbs": 985.0,
+    "calories_180lbs": 1144.0,
+    "calories_205lbs": 1303.0
+  },
+  "Running, 9 mph (6.5 min mile)": {
+    "calories_130lbs": 885.0,
+    "calories_155lbs": 1056.0,
+    "calories_180lbs": 1226.0,
+    "calories_205lbs": 1396.0
+  },
+  "Running, 10 mph (6 min mile)": {
+    "calories_130lbs": 944.0,
+    "calories_155lbs": 1126.0,
+    "calories_180lbs": 1308.0,
+    "calories_205lbs": 1489.0
+  },
+  "Running, 10.9 mph (5.5 min mile)": {
+    "calories_130lbs": 1062.0,
+    "calories_155lbs": 1267.0,
+    "calories_180lbs": 1471.0,
+    "calories_205lbs": 1675.0
+  },
+  "Running, cross country": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Running, general": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Running, on a track, team practice": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Running, stairs, up": {
+    "calories_130lbs": 885.0,
+    "calories_155lbs": 1056.0,
+    "calories_180lbs": 1226.0,
+    "calories_205lbs": 1396.0
+  },
+  "Track and field (shot, discus)": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Track and field (high jump, pole vault)": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Track and field (hurdles)": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Archery": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Badminton": {
+    "calories_130lbs": 266.0,
+    "calories_155lbs": 317.0,
+    "calories_180lbs": 368.0,
+    "calories_205lbs": 419.0
+  },
+  "Basketball game, competitive": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Playing basketball, non game": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Basketball, officiating": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Basketball, shooting baskets": {
+    "calories_130lbs": 266.0,
+    "calories_155lbs": 317.0,
+    "calories_180lbs": 368.0,
+    "calories_205lbs": 419.0
+  },
+  "Basketball, wheelchair": {
+    "calories_130lbs": 384.0,
+    "calories_155lbs": 457.0,
+    "calories_180lbs": 531.0,
+    "calories_205lbs": 605.0
+  },
+  "Running, training, pushing wheelchair": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Billiards": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Bowling": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Boxing, in ring": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Boxing, punching bag": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Boxing, sparring": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Coaching: football, basketball, soccer\u2026": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Cricket (batting, bowling)": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Croquet": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Curling": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Darts (wall or lawn)": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Fencing": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Football, competitive": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Football, touch, flag, general": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Football or baseball, playing catch": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Frisbee playing, general": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Frisbee, ultimate frisbee": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Golf, general": {
+    "calories_130lbs": 266.0,
+    "calories_155lbs": 317.0,
+    "calories_180lbs": 368.0,
+    "calories_205lbs": 419.0
+  },
+  "Golf, walking and carrying clubs": {
+    "calories_130lbs": 266.0,
+    "calories_155lbs": 317.0,
+    "calories_180lbs": 368.0,
+    "calories_205lbs": 419.0
+  },
+  "Golf, driving range": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Golf, miniature golf": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Golf, walking and pulling clubs": {
+    "calories_130lbs": 254.0,
+    "calories_155lbs": 303.0,
+    "calories_180lbs": 351.0,
+    "calories_205lbs": 400.0
+  },
+  "Golf, using power cart": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Gymnastics": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Hacky sack": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Handball": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Handball, team": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Hockey, field hockey": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Hockey, ice hockey": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Riding a horse, general": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Horesback riding, saddling horse": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Horseback riding, grooming horse": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Horseback riding, trotting": {
+    "calories_130lbs": 384.0,
+    "calories_155lbs": 457.0,
+    "calories_180lbs": 531.0,
+    "calories_205lbs": 605.0
+  },
+  "Horseback riding, walking": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Horse racing, galloping": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Horse grooming, moderate": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Horseshoe pitching": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Jai alai": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Martial arts, judo, karate, jujitsu": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Martial arts, kick boxing": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Martial arts, tae kwan do": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Krav maga training": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Juggling": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Kickball": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Lacrosse": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Orienteering": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Playing paddleball": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Paddleball, competitive": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Polo": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Racquetball, competitive": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Playing racquetball": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Rock climbing, ascending rock": {
+    "calories_130lbs": 649.0,
+    "calories_155lbs": 774.0,
+    "calories_180lbs": 899.0,
+    "calories_205lbs": 1024.0
+  },
+  "Rock climbing, rappelling": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Jumping rope, fast": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Jumping rope, moderate": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Jumping rope, slow": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Rugby": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Shuffleboard, lawn bowling": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Skateboarding": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Roller skating": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Roller blading, in-line skating": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Sky diving": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Soccer, competitive": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Playing soccer": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Softball or baseball": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Softball, officiating": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Softball, pitching": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Squash": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Table tennis, ping pong": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Tai chi": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Playing tennis": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Tennis, doubles": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Tennis, singles": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Trampoline": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Volleyball, competitive": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Playing volleyball": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Volleyball, beach": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Wrestling": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Wallyball": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Backpacking, Hiking with pack": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Carrying infant, level ground": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Carrying infant, upstairs": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Carrying 16 to 24 lbs, upstairs": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Carrying 25 to 49 lbs, upstairs": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Standing, playing with children, light": {
+    "calories_130lbs": 165.0,
+    "calories_155lbs": 197.0,
+    "calories_180lbs": 229.0,
+    "calories_205lbs": 261.0
+  },
+  "Walk/run, playing with children, moderate": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Walk/run, playing with children, vigorous": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Carrying small children": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Loading, unloading car": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Climbing hills, carrying up to 9 lbs": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Climbing hills, carrying 10 to 20 lb": {
+    "calories_130lbs": 443.0,
+    "calories_155lbs": 528.0,
+    "calories_180lbs": 613.0,
+    "calories_205lbs": 698.0
+  },
+  "Climbing hills, carrying 21 to 42 lb": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Climbing hills, carrying over 42 lb": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Walking downstairs": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Hiking, cross country": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Bird watching": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Marching, rapidly, military": {
+    "calories_130lbs": 384.0,
+    "calories_155lbs": 457.0,
+    "calories_180lbs": 531.0,
+    "calories_205lbs": 605.0
+  },
+  "Children's games, hopscotch, dodgeball": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Pushing stroller or walking with children": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Pushing a wheelchair": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Race walking": {
+    "calories_130lbs": 384.0,
+    "calories_155lbs": 457.0,
+    "calories_180lbs": 531.0,
+    "calories_205lbs": 605.0
+  },
+  "Rock climbing, mountain climbing": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Walking using crutches": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Walking the dog": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Walking, under 2.0 mph, very slow": {
+    "calories_130lbs": 118.0,
+    "calories_155lbs": 141.0,
+    "calories_180lbs": 163.0,
+    "calories_205lbs": 186.0
+  },
+  "Walking 2.0 mph, slow": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Walking 2.5 mph": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Walking 3.0 mph, moderate": {
+    "calories_130lbs": 195.0,
+    "calories_155lbs": 232.0,
+    "calories_180lbs": 270.0,
+    "calories_205lbs": 307.0
+  },
+  "Walking 3.5 mph, brisk pace": {
+    "calories_130lbs": 224.0,
+    "calories_155lbs": 267.0,
+    "calories_180lbs": 311.0,
+    "calories_205lbs": 354.0
+  },
+  "Walking 3.5 mph, uphill": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Walking 4.0 mph, very brisk": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Walking 4.5 mph": {
+    "calories_130lbs": 372.0,
+    "calories_155lbs": 443.0,
+    "calories_180lbs": 515.0,
+    "calories_205lbs": 586.0
+  },
+  "Walking 5.0 mph": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Boating, power, speed boat": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Canoeing, camping trip": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Canoeing, rowing, light": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Canoeing, rowing, moderate": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Canoeing, rowing, vigorous": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Crew, sculling, rowing, competition": {
+    "calories_130lbs": 708.0,
+    "calories_155lbs": 844.0,
+    "calories_180lbs": 981.0,
+    "calories_205lbs": 1117.0
+  },
+  "Kayaking": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Paddle boat": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Windsurfing, sailing": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Sailing, competition": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Sailing, yachting, ocean sailing": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Skiing, water skiing": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Ski mobiling": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Skin diving, fast": {
+    "calories_130lbs": 944.0,
+    "calories_155lbs": 1126.0,
+    "calories_180lbs": 1308.0,
+    "calories_205lbs": 1489.0
+  },
+  "Skin diving, moderate": {
+    "calories_130lbs": 738.0,
+    "calories_155lbs": 880.0,
+    "calories_180lbs": 1022.0,
+    "calories_205lbs": 1163.0
+  },
+  "Skin diving, scuba diving": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Snorkeling": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Surfing, body surfing or board surfing": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Whitewater rafting, kayaking, canoeing": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Swimming laps, freestyle, fast": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Swimming laps, freestyle, slow": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Swimming backstroke": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Swimming breaststroke": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Swimming butterfly": {
+    "calories_130lbs": 649.0,
+    "calories_155lbs": 774.0,
+    "calories_180lbs": 899.0,
+    "calories_205lbs": 1024.0
+  },
+  "Swimming leisurely, not laps": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Swimming sidestroke": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Swimming synchronized": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Swimming, treading water, fast, vigorous": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Swimming, treading water, moderate": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Water aerobics, water calisthenics": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Water polo": {
+    "calories_130lbs": 590.0,
+    "calories_155lbs": 704.0,
+    "calories_180lbs": 817.0,
+    "calories_205lbs": 931.0
+  },
+  "Water volleyball": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Water jogging": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Diving, springboard or platform": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Ice skating, < 9 mph": {
+    "calories_130lbs": 325.0,
+    "calories_155lbs": 387.0,
+    "calories_180lbs": 449.0,
+    "calories_205lbs": 512.0
+  },
+  "Ice skating, average speed": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Ice skating, rapidly": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Speed skating, ice, competitive": {
+    "calories_130lbs": 885.0,
+    "calories_155lbs": 1056.0,
+    "calories_180lbs": 1226.0,
+    "calories_205lbs": 1396.0
+  },
+  "Cross country snow skiing, slow": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Cross country skiing, moderate": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Cross country skiing, vigorous": {
+    "calories_130lbs": 531.0,
+    "calories_155lbs": 633.0,
+    "calories_180lbs": 735.0,
+    "calories_205lbs": 838.0
+  },
+  "Cross country skiing, racing": {
+    "calories_130lbs": 826.0,
+    "calories_155lbs": 985.0,
+    "calories_180lbs": 1144.0,
+    "calories_205lbs": 1303.0
+  },
+  "Cross country skiing, uphill": {
+    "calories_130lbs": 974.0,
+    "calories_155lbs": 1161.0,
+    "calories_180lbs": 1348.0,
+    "calories_205lbs": 1536.0
+  },
+  "Snow skiing, downhill skiing, light": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Downhill snow skiing, moderate": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Downhill snow skiing, racing": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Sledding, tobagganing, luge": {
+    "calories_130lbs": 413.0,
+    "calories_155lbs": 493.0,
+    "calories_180lbs": 572.0,
+    "calories_205lbs": 651.0
+  },
+  "Snow shoeing": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Snowmobiling": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "General housework": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Cleaning gutters": {
+    "calories_130lbs": 295.0,
+    "calories_155lbs": 352.0,
+    "calories_180lbs": 409.0,
+    "calories_205lbs": 465.0
+  },
+  "Painting": {
+    "calories_130lbs": 266.0,
+    "calories_155lbs": 317.0,
+    "calories_180lbs": 368.0,
+    "calories_205lbs": 419.0
+  },
+  "Sit, playing with animals": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Walk / run, playing with animals": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Bathing dog": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Mowing lawn, walk, power mower": {
+    "calories_130lbs": 325.0,
+    "calories_155lbs": 387.0,
+    "calories_180lbs": 449.0,
+    "calories_205lbs": 512.0
+  },
+  "Mowing lawn, riding mower": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Walking, snow blower": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Riding, snow blower": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Shoveling snow by hand": {
+    "calories_130lbs": 354.0,
+    "calories_155lbs": 422.0,
+    "calories_180lbs": 490.0,
+    "calories_205lbs": 558.0
+  },
+  "Raking lawn": {
+    "calories_130lbs": 254.0,
+    "calories_155lbs": 303.0,
+    "calories_180lbs": 351.0,
+    "calories_205lbs": 400.0
+  },
+  "Gardening, general": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Bagging grass, leaves": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Watering lawn or garden": {
+    "calories_130lbs": 89.0,
+    "calories_155lbs": 106.0,
+    "calories_180lbs": 123.0,
+    "calories_205lbs": 140.0
+  },
+  "Weeding, cultivating garden": {
+    "calories_130lbs": 266.0,
+    "calories_155lbs": 317.0,
+    "calories_180lbs": 368.0,
+    "calories_205lbs": 419.0
+  },
+  "Carpentry, general": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Carrying heavy loads": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "Carrying moderate loads upstairs": {
+    "calories_130lbs": 472.0,
+    "calories_155lbs": 563.0,
+    "calories_180lbs": 654.0,
+    "calories_205lbs": 745.0
+  },
+  "General cleaning": {
+    "calories_130lbs": 207.0,
+    "calories_155lbs": 246.0,
+    "calories_180lbs": 286.0,
+    "calories_205lbs": 326.0
+  },
+  "Cleaning, dusting": {
+    "calories_130lbs": 148.0,
+    "calories_155lbs": 176.0,
+    "calories_180lbs": 204.0,
+    "calories_205lbs": 233.0
+  },
+  "Taking out trash": {
+    "calories_130lbs": 177.0,
+    "calories_155lbs": 211.0,
+    "calories_180lbs": 245.0,
+    "calories_205lbs": 279.0
+  },
+  "Walking, pushing a wheelchair": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  },
+  "Teach physical education,exercise class": {
+    "calories_130lbs": 236.0,
+    "calories_155lbs": 281.0,
+    "calories_180lbs": 327.0,
+    "calories_205lbs": 372.0
+  }
+}
