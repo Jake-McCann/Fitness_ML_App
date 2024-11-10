@@ -2,17 +2,48 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import json
 import os
+from datetime import datetime
 
 app = Flask(__name__)
-CORS(app)  # Allow all origins during development
+CORS(app)
 
-# Get the absolute path to the json file
+# Get paths to data files
 current_dir = os.path.dirname(os.path.abspath(__file__))
-json_path = os.path.join(current_dir, 'Datasets', 'exercise_calories.json')
+exercise_path = os.path.join(current_dir, 'Datasets', 'exercise_calories.json')
+history_path = os.path.join(current_dir, 'Datasets', 'history.json')
 
 # Load exercise data
-with open(json_path, 'r') as f:
+with open(exercise_path, 'r') as f:
     exercise_data = json.load(f)
+
+def load_history():
+    if os.path.exists(history_path):
+        with open(history_path, 'r') as f:
+            return json.load(f)
+    return {"entries": []}
+
+def save_history(history_data):
+    with open(history_path, 'w') as f:
+        json.dump(history_data, f, indent=2)
+
+@app.route('/api/history', methods=['GET'])
+def get_history():
+    history_data = load_history()
+    return jsonify(history_data['entries'])
+
+@app.route('/api/history', methods=['POST'])
+def add_history_entry():
+    data = request.json
+    history_data = load_history()
+    
+    # Add the new entry
+    history_data['entries'].append(data)
+    
+    # Sort entries by date (newest first)
+    history_data['entries'].sort(key=lambda x: x['date'], reverse=True)
+    
+    save_history(history_data)
+    return jsonify({"message": "Entry added successfully"})
 
 @app.route('/api/exercises/search')
 def search_exercises():
@@ -46,6 +77,17 @@ def calculate_calories():
             total_calories += calories
     
     return jsonify({'totalCalories': round(total_calories)})
+
+@app.route('/api/suggestions', methods=['POST'])
+def get_suggestions():
+    data = request.json
+    goal_type = data.get('goalType')
+    goal_value = data.get('goalValue')
+    timeframe = data.get('timeframe')
+    
+    # Process through ML model and get suggestions
+    suggestions = generate_suggestions(goal_type, goal_value, timeframe)
+    return jsonify(suggestions)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

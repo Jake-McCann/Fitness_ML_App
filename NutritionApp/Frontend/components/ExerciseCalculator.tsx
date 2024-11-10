@@ -21,7 +21,11 @@ interface ExerciseSuggestion {
 
 const WEIGHT_CATEGORIES = [130, 155, 180, 205];
 
-const ExerciseCalculator = () => {
+interface ExerciseCalculatorProps {
+  onSubmit: (exercises: Array<{ name: string; minutes: number; caloriesBurned: number }>, totalCalories: number) => void;
+}
+
+const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => {
   const [userWeight, setUserWeight] = useState<number>(155);
   const [exercises, setExercises] = useState<Exercise[]>([{ name: '', minutes: 0 }]);
   const [suggestions, setSuggestions] = useState<ExerciseSuggestion[]>([]);
@@ -87,6 +91,15 @@ const ExerciseCalculator = () => {
       });
       const data = await response.json();
       setTotalCalories(data.totalCalories);
+      
+      // Call onSubmit with the exercises and total calories
+      if (onSubmit) {
+        const exercisesWithCalories = exercises.map(ex => ({
+          ...ex,
+          caloriesBurned: (data.totalCalories / exercises.length) // This is an approximation
+        }));
+        onSubmit(exercisesWithCalories, data.totalCalories);
+      }
     } catch (error) {
       console.error('Error calculating calories:', error);
       Alert.alert('Error', 'Failed to calculate calories');
