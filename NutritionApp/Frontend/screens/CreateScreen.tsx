@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import ExerciseCalculator from '../components/ExerciseCalculator';
 import { COLORS } from '../constants/colors';
 import { API_URL } from '../config';
 
 const CreateScreen = () => {
-  const [date, setDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [date] = useState(new Date());
 
   const handleExerciseSubmit = async (exercises: Array<{ name: string, minutes: number, caloriesBurned: number }>, totalCalories: number) => {
     try {
@@ -38,27 +36,11 @@ const CreateScreen = () => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
-        style={styles.dateButton} 
-        onPress={() => setShowDatePicker(true)}
-      >
+      <View style={styles.dateButton}>
         <Text style={styles.dateText}>
           Date: {date.toISOString().split('T')[0]}
         </Text>
-      </TouchableOpacity>
-
-      {showDatePicker && (
-        <DateTimePicker
-          value={date}
-          mode="date"
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) {
-              setDate(selectedDate);
-            }
-          }}
-        />
-      )}
+      </View>
 
       <ExerciseCalculator onSubmit={handleExerciseSubmit} />
     </View>

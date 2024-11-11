@@ -36,8 +36,20 @@ def add_history_entry():
     data = request.json
     history_data = load_history()
     
-    # Add the new entry
-    history_data['entries'].append(data)
+    # Find if entry for this date already exists
+    date = data['date']
+    existing_entry = next(
+        (entry for entry in history_data['entries'] if entry['date'] == date),
+        None
+    )
+    
+    if existing_entry:
+        # Add exercise to existing date entry
+        existing_entry['exercises'].append(data['exercises'][0])
+        existing_entry['totalCaloriesBurned'] += data['totalCaloriesBurned']
+    else:
+        # Create new date entry
+        history_data['entries'].append(data)
     
     # Sort entries by date (newest first)
     history_data['entries'].sort(key=lambda x: x['date'], reverse=True)

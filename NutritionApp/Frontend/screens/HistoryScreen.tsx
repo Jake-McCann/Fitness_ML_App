@@ -34,6 +34,15 @@ const HistoryScreen = () => {
     }
   };
 
+  const renderExerciseItem = ({ item }: { item: Exercise }) => (
+    <View style={styles.exerciseItem}>
+      <Text style={styles.exerciseText}>{item.name}</Text>
+      <Text style={styles.exerciseDetails}>
+        {item.minutes} mins • {item.caloriesBurned} calories
+      </Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -44,17 +53,21 @@ const HistoryScreen = () => {
             style={styles.dayCard}
             onPress={() => setExpandedDay(expandedDay === item.date ? null : item.date)}
           >
-            <Text style={styles.dateText}>{item.date}</Text>
-            <Text style={styles.summaryText}>
-              Calories Burned: {item.totalCaloriesBurned}
-            </Text>
+            <View style={styles.dateHeader}>
+              <Text style={styles.dateText}>{item.date}</Text>
+              <Text style={styles.totalCalories}>
+                {item.totalCaloriesBurned} calories
+              </Text>
+            </View>
+            
             {expandedDay === item.date && (
               <View style={styles.exerciseList}>
-                {item.exercises.map((exercise, index) => (
-                  <Text key={index} style={styles.exerciseText}>
-                    {exercise.name} - {exercise.minutes} mins ({exercise.caloriesBurned} cal)
-                  </Text>
-                ))}
+                <FlatList
+                  data={item.exercises}
+                  keyExtractor={(exercise, index) => `${item.date}-${index}`}
+                  renderItem={renderExerciseItem}
+                  scrollEnabled={false}
+                />
               </View>
             )}
           </TouchableOpacity>
@@ -76,14 +89,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
   },
+  dateHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
   dateText: {
     color: COLORS.white,
     fontSize: 18,
     fontWeight: 'bold',
   },
-  summaryText: {
+  totalCalories: {
     color: COLORS.white,
-    marginTop: 5,
+    fontSize: 16,
+    fontWeight: '500',
   },
   exerciseList: {
     marginTop: 10,
@@ -91,9 +110,20 @@ const styles = StyleSheet.create({
     borderTopColor: COLORS.white,
     paddingTop: 10,
   },
+  exerciseItem: {
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+  },
   exerciseText: {
     color: COLORS.white,
-    marginVertical: 2,
+    fontSize: 16,
+    marginBottom: 4,
+  },
+  exerciseDetails: {
+    color: COLORS.white,
+    fontSize: 14,
+    opacity: 0.8,
   },
 });
 

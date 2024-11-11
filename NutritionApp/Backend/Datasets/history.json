@@ -4,23 +4,22 @@
       "date": "2024-11-10",
       "exercises": [
         {
-          "name": "Calisthenics, vigorous, pushups, situps\u2026",
-          "minutes": 60,
-          "caloriesBurned": 563
-        }
-      ],
-      "totalCaloriesBurned": 563
-    },
-    {
-      "date": "2024-11-10",
-      "exercises": [
-        {
           "name": "Cycling, 12-13.9 mph, moderate",
           "minutes": 60,
           "caloriesBurned": 563
+        },
+        {
+          "name": "Whitewater rafting, kayaking, canoeing",
+          "minutes": 40,
+          "caloriesBurned": 235
+        },
+        {
+          "name": "Rock climbing, ascending rock",
+          "minutes": 50,
+          "caloriesBurned": 955.5
         }
       ],
-      "totalCaloriesBurned": 563
+      "totalCaloriesBurned": 2709
     }
   ]
 }
