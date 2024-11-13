@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import ExerciseCalculator from '../components/ExerciseCalculator';
 import NutritionCalculator from '../components/NutritionCalculator';
 import { COLORS } from '../constants/colors';
@@ -65,20 +66,24 @@ const CreateScreen = () => {
     <View style={styles.container}>
       <View style={styles.tabContainer}>
         <TouchableOpacity 
-          style={[styles.tab, activeTab === 'exercise' && styles.activeTab]}
+          style={[styles.tab]}
           onPress={() => setActiveTab('exercise')}
         >
-          <Text style={[styles.tabText, activeTab === 'exercise' && styles.activeTabText]}>
-            Exercise
-          </Text>
+          <Ionicons 
+            name="barbell-outline" 
+            size={24} 
+            color={activeTab === 'exercise' ? COLORS.yellow : COLORS.white} 
+          />
         </TouchableOpacity>
         <TouchableOpacity 
-          style={[styles.tab, activeTab === 'nutrition' && styles.activeTab]}
+          style={[styles.tab]}
           onPress={() => setActiveTab('nutrition')}
         >
-          <Text style={[styles.tabText, activeTab === 'nutrition' && styles.activeTabText]}>
-            Nutrition
-          </Text>
+          <Ionicons 
+            name="restaurant-outline" 
+            size={24} 
+            color={activeTab === 'nutrition' ? COLORS.yellow : COLORS.white} 
+          />
         </TouchableOpacity>
       </View>
 
@@ -104,28 +109,17 @@ const styles = StyleSheet.create({
   },
   tabContainer: {
     flexDirection: 'row',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    backgroundColor: COLORS.darkPurple,
+    paddingVertical: 8,
   },
   tab: {
     flex: 1,
-    paddingVertical: 12,
     alignItems: 'center',
-  },
-  activeTab: {
-    borderBottomWidth: 2,
-    borderBottomColor: COLORS.darkPurple,
-  },
-  tabText: {
-    fontSize: 16,
-    color: '#666',
-  },
-  activeTabText: {
-    color: COLORS.darkPurple,
-    fontWeight: '500',
+    justifyContent: 'center',
+    paddingVertical: 4,
   },
   dateButton: {
-    backgroundColor: COLORS.darkPurple,
+    backgroundColor: COLORS.lightPurple,
     padding: 16,
     marginHorizontal: 16,
     marginVertical: 8,

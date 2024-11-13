@@ -1,3 +1,23 @@
 {
-  "entries": []
+  "entries": [
+    {
+      "date": "2024-11-13",
+      "exercises": [
+        {
+          "name": "Rock climbing, ascending rock",
+          "minutes": 60,
+          "caloriesBurned": 899
+        }
+      ],
+      "totalCaloriesBurned": 899,
+      "foods": [
+        {
+          "name": "Pancakes Plain Frozen Ready-To-Heat Microwave (Includes Buttermilk)",
+          "servings": 4,
+          "calories": 956
+        }
+      ],
+      "totalCaloriesConsumed": 956
+    }
+  ]
 }

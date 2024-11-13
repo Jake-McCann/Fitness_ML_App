@@ -71,6 +71,7 @@ const NutritionCalculator: React.FC<NutritionCalculatorProps> = ({ onSubmit }) =
     setFood({ name: '', servings: 0, calories: 0 });
     setBaseCalories(0);
     setSearchText('');
+    Keyboard.dismiss();
     Alert.alert('Success', 'Nutrition Data Logged Successfully');
   };
 

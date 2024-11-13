@@ -98,6 +98,7 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
           caloriesBurned: (data.totalCalories / exercises.length)
         }));
         onSubmit(exercisesWithCalories, data.totalCalories);
+        Keyboard.dismiss();
         Alert.alert('Success', 'Exercise Data Logged Successfully');
       }
     } catch (error) {
