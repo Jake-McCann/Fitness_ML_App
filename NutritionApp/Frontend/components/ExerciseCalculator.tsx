@@ -7,6 +7,8 @@ import {
   FlatList,
   StyleSheet,
   Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from 'react-native';
 import { API_URL } from '../config';
 
@@ -67,15 +69,6 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
     setExercises(updatedExercises);
   };
 
-  const addExercise = () => {
-    setExercises([...exercises, { name: '', minutes: 0 }]);
-  };
-
-  const removeExercise = (index: number) => {
-    const updatedExercises = exercises.filter((_, i) => i !== index);
-    setExercises(updatedExercises);
-  };
-
   const calculateCalories = async () => {
     try {
       const weightCategory = getWeightCategory(userWeight);
@@ -107,83 +100,95 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Exercise Calorie Calculator</Text>
-      
-      <View style={styles.weightContainer}>
-        <Text style={styles.label}>Your Weight (lbs)</Text>
-        <TextInput
-          style={styles.weightInput}
-          value={userWeight.toString()}
-          onChangeText={(value) => setUserWeight(Number(value))}
-          keyboardType="numeric"
-        />
-        <Text style={styles.helpText}>
-          Available categories: {WEIGHT_CATEGORIES.join(', ')} lbs
-        </Text>
-      </View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Exercise Calorie Calculator</Text>
+        
+        <View style={styles.weightContainer}>
+          <Text style={styles.label}>Your Weight (lbs)</Text>
+          <View style={styles.weightButtonsContainer}>
+            {WEIGHT_CATEGORIES.map((weight) => (
+              <TouchableOpacity
+                key={weight}
+                style={[
+                  styles.weightButton,
+                  userWeight === weight && styles.weightButtonSelected
+                ]}
+                onPress={() => setUserWeight(weight)}
+              >
+                <Text style={[
+                  styles.weightButtonText,
+                  userWeight === weight && styles.weightButtonTextSelected
+                ]}>
+                  {weight === 130 ? '≤130' : weight === 205 ? '≥205' : weight}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
-      {exercises.map((exercise, index) => (
-        <View key={index} style={styles.exerciseRow}>
-          <View style={styles.exerciseInputContainer}>
-            <TextInput
-              style={styles.exerciseInput}
-              value={exercise.name}
-              onChangeText={(value) => handleSearchChange(index, value)}
-              placeholder="Search exercise..."
-            />
-            {activeSearchIndex === index && suggestions.length > 0 && (
-              <View style={styles.suggestionsContainer}>
-                <FlatList
-                  data={suggestions}
-                  keyExtractor={(item, i) => i.toString()}
-                  renderItem={({ item }) => (
+        {exercises.map((exercise, index) => (
+          <View key={index} style={styles.exerciseRow}>
+            <View style={styles.exerciseInputContainer}>
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.exerciseInput}
+                  value={exercise.name}
+                  onChangeText={(value) => handleSearchChange(index, value)}
+                  placeholder="Search exercise..."
+                />
+                <View style={styles.clearButtonContainer}>
+                  {exercise.name.length > 0 && (
                     <TouchableOpacity
-                      onPress={() => {
-                        handleSearchChange(index, item.name);
-                        setActiveSearchIndex(null);
-                      }}
-                      style={styles.suggestionItem}
+                      style={styles.clearButton}
+                      onPress={() => handleSearchChange(index, '')}
                     >
-                      <Text>{item.name}</Text>
+                      <Text style={styles.clearButtonText}>×</Text>
                     </TouchableOpacity>
                   )}
-                />
+                </View>
               </View>
-            )}
+              {activeSearchIndex === index && suggestions.length > 0 && (
+                <View style={styles.suggestionsContainer}>
+                  <FlatList
+                    data={suggestions}
+                    keyExtractor={(item, i) => i.toString()}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        onPress={() => {
+                          handleSearchChange(index, item.name);
+                          setActiveSearchIndex(null);
+                        }}
+                        style={styles.suggestionItem}
+                      >
+                        <Text>{item.name}</Text>
+                      </TouchableOpacity>
+                    )}
+                  />
+                </View>
+              )}
+            </View>
+            <TextInput
+              style={styles.minutesInput}
+              value={exercise.minutes.toString()}
+              onChangeText={(value) => handleMinutesChange(index, value)}
+              placeholder="Min"
+              keyboardType="numeric"
+            />
           </View>
-          <TextInput
-            style={styles.minutesInput}
-            value={exercise.minutes.toString()}
-            onChangeText={(value) => handleMinutesChange(index, value)}
-            placeholder="Min"
-            keyboardType="numeric"
-          />
-          {exercises.length > 1 && (
-            <TouchableOpacity
-              onPress={() => removeExercise(index)}
-              style={styles.removeButton}
-            >
-              <Text style={styles.removeButtonText}>✕</Text>
-            </TouchableOpacity>
-          )}
-        </View>
-      ))}
+        ))}
 
-      <TouchableOpacity onPress={addExercise} style={styles.addButton}>
-        <Text style={styles.buttonText}>+ Add Exercise</Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={calculateCalories} style={styles.calculateButton}>
+          <Text style={styles.buttonText}>Log Exercise</Text>
+        </TouchableOpacity>
 
-      <TouchableOpacity onPress={calculateCalories} style={styles.calculateButton}>
-        <Text style={styles.buttonText}>Calculate Calories</Text>
-      </TouchableOpacity>
-
-      {totalCalories !== null && (
-        <Text style={styles.totalCalories}>
-          Total Calories Burned: {totalCalories}
-        </Text>
-      )}
-    </View>
+        {totalCalories !== null && (
+          <Text style={styles.totalCalories}>
+            Total Calories Burned: {totalCalories}
+          </Text>
+        )}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -204,17 +209,32 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     marginBottom: 8,
   },
-  weightInput: {
-    width: 120,
+  weightButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  weightButton: {
+    flex: 1,
+    backgroundColor: 'white',
+    padding: 10,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 8,
-    padding: 8,
+    marginHorizontal: 4,
+    alignItems: 'center',
   },
-  helpText: {
-    fontSize: 12,
-    color: '#666',
-    marginTop: 4,
+  weightButtonSelected: {
+    backgroundColor: '#2ecc71',
+    borderColor: '#2ecc71',
+  },
+  weightButtonText: {
+    color: '#333',
+    fontSize: 14,
+    fontWeight: '500',
+  },
+  weightButtonTextSelected: {
+    color: 'white',
   },
   exerciseRow: {
     flexDirection: 'row',
@@ -225,11 +245,18 @@ const styles = StyleSheet.create({
     flex: 1,
     marginRight: 8,
   },
-  exerciseInput: {
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
+    position: 'relative',
+  },
+  exerciseInput: {
+    flex: 1,
     padding: 8,
+    paddingRight: 40,
   },
   minutesInput: {
     width: 80,
@@ -256,20 +283,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  removeButton: {
-    padding: 8,
-  },
-  removeButtonText: {
-    color: 'red',
-    fontSize: 16,
-  },
-  addButton: {
-    backgroundColor: '#3498db',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    alignItems: 'center',
-  },
   calculateButton: {
     backgroundColor: '#2ecc71',
     padding: 12,
@@ -286,6 +299,27 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: 16,
+  },
+  clearButtonContainer: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    bottom: 0,
+    justifyContent: 'center',
+    width: 40,
+    height: '100%',
+  },
+  clearButton: {
+    padding: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  clearButtonText: {
+    fontSize: 18,
+    color: '#666',
+    fontWeight: 'bold',
+    lineHeight: 18,
   },
 });
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, RefreshControl } from 'react-native';
 import { COLORS } from '../constants/colors';
 import { API_URL } from '../config';
 
@@ -18,6 +18,7 @@ interface DayEntry {
 const HistoryScreen = () => {
   const [historyData, setHistoryData] = useState<DayEntry[]>([]);
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     fetchHistory();
@@ -34,6 +35,11 @@ const HistoryScreen = () => {
     }
   };
 
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    fetchHistory().finally(() => setRefreshing(false));
+  }, []);
+
   const renderExerciseItem = ({ item }: { item: Exercise }) => (
     <View style={styles.exerciseItem}>
       <Text style={styles.exerciseText}>{item.name}</Text>
@@ -48,6 +54,14 @@ const HistoryScreen = () => {
       <FlatList
         data={historyData}
         keyExtractor={(item) => item.date}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={[COLORS.darkPurple]}
+            tintColor={COLORS.darkPurple}
+          />
+        }
         renderItem={({ item }) => (
           <TouchableOpacity 
             style={styles.dayCard}
