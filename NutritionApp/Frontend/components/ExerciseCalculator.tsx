@@ -11,6 +11,7 @@ import {
   Keyboard,
 } from 'react-native';
 import { API_URL } from '../config';
+import { COLORS } from '../constants/colors';
 
 interface Exercise {
   name: string;
@@ -70,6 +71,12 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
   };
 
   const calculateCalories = async () => {
+    const hasInvalidExercises = exercises.some(ex => !ex.name || ex.minutes <= 0);
+    if (hasInvalidExercises) {
+      Alert.alert('Error', 'You must enter a valid exercise and minutes');
+      return;
+    }
+
     try {
       const weightCategory = getWeightCategory(userWeight);
       const response = await fetch(`${API_URL}/api/exercises/calculate`, {
@@ -85,13 +92,13 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
       const data = await response.json();
       setTotalCalories(data.totalCalories);
       
-      // Call onSubmit with the exercises and total calories
       if (onSubmit) {
         const exercisesWithCalories = exercises.map(ex => ({
           ...ex,
-          caloriesBurned: (data.totalCalories / exercises.length) // This is an approximation
+          caloriesBurned: (data.totalCalories / exercises.length)
         }));
         onSubmit(exercisesWithCalories, data.totalCalories);
+        Alert.alert('Success', 'Exercise Data Logged Successfully');
       }
     } catch (error) {
       console.error('Error calculating calories:', error);
@@ -170,10 +177,11 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
             </View>
             <TextInput
               style={styles.minutesInput}
-              value={exercise.minutes.toString()}
-              onChangeText={(value) => handleMinutesChange(index, value)}
-              placeholder="Min"
+              placeholder="Minutes"
+              placeholderTextColor="rgba(0, 0, 0, 0.4)"
               keyboardType="numeric"
+              value={exercise.minutes > 0 ? exercise.minutes.toString() : ''}
+              onChangeText={(value) => handleMinutesChange(index, value)}
             />
           </View>
         ))}
@@ -225,8 +233,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   weightButtonSelected: {
-    backgroundColor: '#2ecc71',
-    borderColor: '#2ecc71',
+    backgroundColor: COLORS.lightPurple,
+    borderColor: COLORS.lightPurple,
   },
   weightButtonText: {
     color: '#333',
@@ -284,7 +292,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#eee',
   },
   calculateButton: {
-    backgroundColor: '#2ecc71',
+    backgroundColor: COLORS.lightPurple,
     padding: 12,
     borderRadius: 8,
     alignItems: 'center',

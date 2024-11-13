@@ -13,11 +13,25 @@ interface DayEntry {
   date: string;
   exercises: Exercise[];
   totalCaloriesBurned: number;
+  totalCaloriesConsumed: number;
+  foods: any[];
 }
+
+interface FoodEntry {
+  name: string;
+  servings: number;
+  calories: number;
+}
+
+type SectionItem = Exercise | FoodEntry;
 
 const HistoryScreen = () => {
   const [historyData, setHistoryData] = useState<DayEntry[]>([]);
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
+  const [expandedSection, setExpandedSection] = useState<{
+    date: string;
+    section: 'exercise' | 'nutrition' | null;
+  }>({ date: '', section: null });
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -40,13 +54,78 @@ const HistoryScreen = () => {
     fetchHistory().finally(() => setRefreshing(false));
   }, []);
 
-  const renderExerciseItem = ({ item }: { item: Exercise }) => (
-    <View style={styles.exerciseItem}>
-      <Text style={styles.exerciseText}>{item.name}</Text>
-      <Text style={styles.exerciseDetails}>
+  const renderExerciseDetails = ({ item }: { item: Exercise }) => (
+    <View style={styles.detailItem}>
+      <Text style={styles.detailText}>{item.name}</Text>
+      <Text style={styles.detailSubtext}>
         {item.minutes} mins • {item.caloriesBurned} calories
       </Text>
     </View>
+  );
+
+  const renderFoodDetails = ({ item }: { item: FoodEntry }) => (
+    <View style={styles.detailItem}>
+      <Text style={styles.detailText}>{item.name}</Text>
+      <Text style={styles.detailSubtext}>
+        {item.servings} servings • {item.calories} calories
+      </Text>
+    </View>
+  );
+
+  const renderSection = (date: string, section: 'exercise' | 'nutrition', data: DayEntry) => {
+    const isExpanded = expandedSection.date === date && expandedSection.section === section;
+    const sectionData = section === 'exercise' ? data.exercises : data.foods;
+    const totalCalories = section === 'exercise' ? data.totalCaloriesBurned : data.totalCaloriesConsumed;
+
+    return (
+      <TouchableOpacity 
+        style={styles.sectionContainer}
+        onPress={() => setExpandedSection(
+          isExpanded ? { date: '', section: null } : { date, section }
+        )}
+      >
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{section === 'exercise' ? 'Exercise' : 'Nutrition'}</Text>
+          <Text style={styles.sectionCalories}>
+            {section === 'exercise' ? 'Burned' : 'Consumed'}: {totalCalories}
+          </Text>
+        </View>
+
+        {isExpanded && (
+          <FlatList<SectionItem>
+            data={sectionData}
+            renderItem={({ item }) => (
+              section === 'exercise' 
+                ? renderExerciseDetails({ item: item as Exercise })
+                : renderFoodDetails({ item: item as FoodEntry })
+            )}
+            keyExtractor={(item, index) => `${date}-${section}-${index}`}
+            scrollEnabled={false}
+          />
+        )}
+      </TouchableOpacity>
+    );
+  };
+
+  const renderDayEntry = ({ item }: { item: DayEntry }) => (
+    <TouchableOpacity 
+      style={styles.dayCard}
+      onPress={() => setExpandedDay(expandedDay === item.date ? null : item.date)}
+    >
+      <View style={styles.dateHeader}>
+        <Text style={styles.dateText}>{item.date}</Text>
+        <Text style={styles.totalCalories}>
+          Net Calories: {(item.totalCaloriesConsumed || 0) - (item.totalCaloriesBurned || 0)}
+        </Text>
+      </View>
+      
+      {expandedDay === item.date && (
+        <View style={styles.sectionsContainer}>
+          {renderSection(item.date, 'exercise', item)}
+          {renderSection(item.date, 'nutrition', item)}
+        </View>
+      )}
+    </TouchableOpacity>
   );
 
   return (
@@ -62,30 +141,7 @@ const HistoryScreen = () => {
             tintColor={COLORS.darkPurple}
           />
         }
-        renderItem={({ item }) => (
-          <TouchableOpacity 
-            style={styles.dayCard}
-            onPress={() => setExpandedDay(expandedDay === item.date ? null : item.date)}
-          >
-            <View style={styles.dateHeader}>
-              <Text style={styles.dateText}>{item.date}</Text>
-              <Text style={styles.totalCalories}>
-                {item.totalCaloriesBurned} calories
-              </Text>
-            </View>
-            
-            {expandedDay === item.date && (
-              <View style={styles.exerciseList}>
-                <FlatList
-                  data={item.exercises}
-                  keyExtractor={(exercise, index) => `${item.date}-${index}`}
-                  renderItem={renderExerciseItem}
-                  scrollEnabled={false}
-                />
-              </View>
-            )}
-          </TouchableOpacity>
-        )}
+        renderItem={renderDayEntry}
       />
     </View>
   );
@@ -118,27 +174,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '500',
   },
-  exerciseList: {
+  sectionsContainer: {
     marginTop: 10,
     borderTopWidth: 1,
-    borderTopColor: COLORS.white,
-    paddingTop: 10,
+    borderTopColor: 'rgba(255, 255, 255, 0.2)',
   },
-  exerciseItem: {
-    paddingVertical: 8,
+  sectionContainer: {
+    padding: 10,
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.2)',
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
   },
-  exerciseText: {
+  sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  sectionTitle: {
     color: COLORS.white,
     fontSize: 16,
-    marginBottom: 4,
+    fontWeight: 'bold',
   },
-  exerciseDetails: {
+  sectionCalories: {
     color: COLORS.white,
     fontSize: 14,
     opacity: 0.8,
   },
+  detailItem: {
+    paddingVertical: 8,
+    paddingHorizontal: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  detailText: {
+    color: COLORS.white,
+    fontSize: 14,
+  },
+  detailSubtext: {
+    color: COLORS.white,
+    fontSize: 12,
+    opacity: 0.8,
+    marginTop: 2,
+  }
 });
 
 export default HistoryScreen;

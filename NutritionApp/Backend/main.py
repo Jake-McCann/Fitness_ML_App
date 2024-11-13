@@ -36,7 +36,6 @@ def add_history_entry():
     data = request.json
     history_data = load_history()
     
-    # Find if entry for this date already exists
     date = data['date']
     existing_entry = next(
         (entry for entry in history_data['entries'] if entry['date'] == date),
@@ -44,11 +43,21 @@ def add_history_entry():
     )
     
     if existing_entry:
-        # Add exercise to existing date entry
-        existing_entry['exercises'].append(data['exercises'][0])
-        existing_entry['totalCaloriesBurned'] += data['totalCaloriesBurned']
+        if 'exercises' in data:
+            if 'exercises' not in existing_entry:
+                existing_entry['exercises'] = []
+            existing_entry['exercises'].extend(data['exercises'])
+            existing_entry['totalCaloriesBurned'] = (
+                existing_entry.get('totalCaloriesBurned', 0) + data['totalCaloriesBurned']
+            )
+        elif 'foods' in data:
+            if 'foods' not in existing_entry:
+                existing_entry['foods'] = []
+            existing_entry['foods'].extend(data['foods'])
+            existing_entry['totalCaloriesConsumed'] = (
+                existing_entry.get('totalCaloriesConsumed', 0) + data['totalCaloriesConsumed']
+            )
     else:
-        # Create new date entry
         history_data['entries'].append(data)
     
     # Sort entries by date (newest first)
@@ -100,6 +109,17 @@ def get_suggestions():
     # Process through ML model and get suggestions
     suggestions = generate_suggestions(goal_type, goal_value, timeframe)
     return jsonify(suggestions)
+
+@app.route('/api/nutrition/search', methods=['GET'])
+def search_nutrition():
+    query = request.args.get('query', '').lower()
+    
+    with open(os.path.join(current_dir, 'Datasets', 'nutrition.json'), 'r') as f:
+        nutrition_data = json.load(f)
+    
+    results = [item for item in nutrition_data 
+              if query in item['name'].lower()]
+    return jsonify(results[:10])  # Limit to 10 results
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
