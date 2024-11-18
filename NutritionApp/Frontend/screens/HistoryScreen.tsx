@@ -9,12 +9,10 @@ interface Exercise {
   caloriesBurned: number;
 }
 
-interface DayEntry {
-  date: string;
-  exercises: Exercise[];
-  totalCaloriesBurned: number;
-  totalCaloriesConsumed: number;
-  foods: any[];
+interface Workout {
+  title: string;
+  type: string;
+  bodyPart: string;
 }
 
 interface FoodEntry {
@@ -23,14 +21,23 @@ interface FoodEntry {
   calories: number;
 }
 
-type SectionItem = Exercise | FoodEntry;
+interface DayEntry {
+  date: string;
+  exercises: Exercise[];
+  totalCaloriesBurned: number;
+  totalCaloriesConsumed: number;
+  foods: FoodEntry[];
+  workouts: Workout[];
+}
+
+type SectionItem = Exercise | FoodEntry | Workout;
 
 const HistoryScreen = () => {
   const [historyData, setHistoryData] = useState<DayEntry[]>([]);
   const [expandedDay, setExpandedDay] = useState<string | null>(null);
   const [expandedSection, setExpandedSection] = useState<{
     date: string;
-    section: 'exercise' | 'nutrition' | null;
+    section: 'exercise' | 'nutrition' | 'workouts' | null;
   }>({ date: '', section: null });
   const [refreshing, setRefreshing] = useState(false);
 
@@ -72,10 +79,37 @@ const HistoryScreen = () => {
     </View>
   );
 
-  const renderSection = (date: string, section: 'exercise' | 'nutrition', data: DayEntry) => {
+  const renderWorkoutDetails = ({ item }: { item: Workout }) => (
+    <View style={styles.detailItem}>
+      <Text style={styles.detailText}>{item.title}</Text>
+      <Text style={styles.detailSubtext}>
+        {item.type} • {item.bodyPart}
+      </Text>
+    </View>
+  );
+
+  const renderSection = (date: string, section: 'exercise' | 'nutrition' | 'workouts', data: DayEntry) => {
     const isExpanded = expandedSection.date === date && expandedSection.section === section;
-    const sectionData = section === 'exercise' ? data.exercises : data.foods;
-    const totalCalories = section === 'exercise' ? data.totalCaloriesBurned : data.totalCaloriesConsumed;
+    let sectionData: any[];
+    let sectionTitle: string;
+    let totalDisplay: string | null = null;
+
+    switch (section) {
+      case 'exercise':
+        sectionData = data.exercises || [];
+        sectionTitle = 'Exercise';
+        totalDisplay = `Burned: ${data.totalCaloriesBurned || 0}`;
+        break;
+      case 'nutrition':
+        sectionData = data.foods || [];
+        sectionTitle = 'Nutrition';
+        totalDisplay = `Consumed: ${data.totalCaloriesConsumed || 0}`;
+        break;
+      case 'workouts':
+        sectionData = data.workouts || [];
+        sectionTitle = 'Workouts';
+        break;
+    }
 
     return (
       <TouchableOpacity 
@@ -85,20 +119,24 @@ const HistoryScreen = () => {
         )}
       >
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>{section === 'exercise' ? 'Exercise' : 'Nutrition'}</Text>
-          <Text style={styles.sectionCalories}>
-            {section === 'exercise' ? 'Burned' : 'Consumed'}: {totalCalories}
-          </Text>
+          <Text style={styles.sectionTitle}>{sectionTitle}</Text>
+          {totalDisplay && (
+            <Text style={styles.sectionCalories}>{totalDisplay}</Text>
+          )}
         </View>
 
         {isExpanded && (
           <FlatList<SectionItem>
             data={sectionData}
-            renderItem={({ item }) => (
-              section === 'exercise' 
-                ? renderExerciseDetails({ item: item as Exercise })
-                : renderFoodDetails({ item: item as FoodEntry })
-            )}
+            renderItem={({ item }) => {
+              if (section === 'exercise') {
+                return renderExerciseDetails({ item: item as Exercise });
+              } else if (section === 'nutrition') {
+                return renderFoodDetails({ item: item as FoodEntry });
+              } else {
+                return renderWorkoutDetails({ item: item as Workout });
+              }
+            }}
             keyExtractor={(item, index) => `${date}-${section}-${index}`}
             scrollEnabled={false}
           />
@@ -123,9 +161,17 @@ const HistoryScreen = () => {
         <View style={styles.sectionsContainer}>
           {renderSection(item.date, 'exercise', item)}
           {renderSection(item.date, 'nutrition', item)}
+          {renderSection(item.date, 'workouts', item)}
         </View>
       )}
     </TouchableOpacity>
+  );
+
+  const renderNutritionTotals = (entry: DayEntry) => (
+    <View style={styles.totalsContainer}>
+      <Text style={styles.totalText}>Daily Totals:</Text>
+      <Text style={styles.totalSubtext}>Calories: {entry.totalCaloriesConsumed}</Text>
+    </View>
   );
 
   return (
@@ -214,7 +260,24 @@ const styles = StyleSheet.create({
     fontSize: 12,
     opacity: 0.8,
     marginTop: 2,
-  }
+  },
+  totalsContainer: {
+    backgroundColor: COLORS.darkPurple,
+    padding: 10,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  totalText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  totalSubtext: {
+    color: COLORS.white,
+    fontSize: 14,
+    marginBottom: 2,
+  },
 });
 
 export default HistoryScreen;

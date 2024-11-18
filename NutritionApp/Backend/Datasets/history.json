@@ -1,23 +1,35 @@
 {
   "entries": [
     {
-      "date": "2024-11-13",
+      "date": "2024-11-18",
       "exercises": [
         {
-          "name": "Rock climbing, ascending rock",
-          "minutes": 60,
-          "caloriesBurned": 899
+          "name": "Weight lifting, body building, vigorous",
+          "minutes": 10,
+          "caloriesBurned": 70
+        },
+        {
+          "name": "Cycling, >20 mph, racing",
+          "minutes": 20,
+          "caloriesBurned": 436
         }
       ],
-      "totalCaloriesBurned": 899,
+      "totalCaloriesBurned": 506,
+      "workouts": [
+        {
+          "bodyPart": "Abdominals",
+          "title": "Banded crunch isometric hold",
+          "type": "Strength"
+        }
+      ],
       "foods": [
         {
-          "name": "Pancakes Plain Frozen Ready-To-Heat Microwave (Includes Buttermilk)",
-          "servings": 4,
-          "calories": 956
+          "name": "Pillsbury Golden Layer Buttermilk Biscuits Artificial Flavor Refrigerated Dough",
+          "servings": 8,
+          "calories": 2456
         }
       ],
-      "totalCaloriesConsumed": 956
+      "totalCaloriesConsumed": 2456
     }
   ]
 }

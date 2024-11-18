@@ -112,29 +112,6 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
       <View style={styles.container}>
         <Text style={styles.title}>Exercise Calorie Calculator</Text>
         
-        <View style={styles.weightContainer}>
-          <Text style={styles.label}>Your Weight (lbs)</Text>
-          <View style={styles.weightButtonsContainer}>
-            {WEIGHT_CATEGORIES.map((weight) => (
-              <TouchableOpacity
-                key={weight}
-                style={[
-                  styles.weightButton,
-                  userWeight === weight && styles.weightButtonSelected
-                ]}
-                onPress={() => setUserWeight(weight)}
-              >
-                <Text style={[
-                  styles.weightButtonText,
-                  userWeight === weight && styles.weightButtonTextSelected
-                ]}>
-                  {weight === 130 ? '≤130' : weight === 205 ? '≥205' : weight}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
-
         {exercises.map((exercise, index) => (
           <View key={index} style={styles.exerciseRow}>
             <View style={styles.exerciseInputContainer}>
@@ -186,6 +163,29 @@ const ExerciseCalculator: React.FC<ExerciseCalculatorProps> = ({ onSubmit }) => 
             />
           </View>
         ))}
+
+        <View style={styles.weightContainer}>
+          <Text style={styles.label}>Your Weight (lbs)</Text>
+          <View style={styles.weightButtonsContainer}>
+            {WEIGHT_CATEGORIES.map((weight) => (
+              <TouchableOpacity
+                key={weight}
+                style={[
+                  styles.weightButton,
+                  userWeight === weight && styles.weightButtonSelected
+                ]}
+                onPress={() => setUserWeight(weight)}
+              >
+                <Text style={[
+                  styles.weightButtonText,
+                  userWeight === weight && styles.weightButtonTextSelected
+                ]}>
+                  {weight === 130 ? '≤130' : weight === 205 ? '≥205' : weight}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
         <TouchableOpacity onPress={calculateCalories} style={styles.calculateButton}>
           <Text style={styles.buttonText}>Log Exercise</Text>

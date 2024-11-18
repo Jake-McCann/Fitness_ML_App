@@ -57,6 +57,10 @@ def add_history_entry():
             existing_entry['totalCaloriesConsumed'] = (
                 existing_entry.get('totalCaloriesConsumed', 0) + data['totalCaloriesConsumed']
             )
+        elif 'workouts' in data:
+            if 'workouts' not in existing_entry:
+                existing_entry['workouts'] = []
+            existing_entry['workouts'].extend(data['workouts'])
     else:
         history_data['entries'].append(data)
     
@@ -120,6 +124,31 @@ def search_nutrition():
     results = [item for item in nutrition_data 
               if query in item['name'].lower()]
     return jsonify(results[:10])  # Limit to 10 results
+
+# Load the exercises dataset
+with open('Datasets/exercises.json', 'r') as f:
+    exercises_data = json.load(f)
+
+@app.route('/api/workouts/search', methods=['GET'])
+def search_workouts():
+    query = request.args.get('q', '').lower()
+    if not query:
+        return jsonify([])
+
+    # Search through exercises and return matches
+    matches = []
+    for exercise in exercises_data:
+        if query in exercise['title'].lower():
+            matches.append({
+                'title': exercise['title'],
+                'type': exercise['type'],
+                'bodyPart': exercise['bodyPart']
+            })
+            # Limit results to prevent overwhelming the frontend
+            if len(matches) >= 10:
+                break
+
+    return jsonify(matches)
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)
