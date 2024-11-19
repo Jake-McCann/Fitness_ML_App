@@ -25,12 +25,19 @@ def load_data_files():
     return exercise_data, workout_data, nutrition_data
 
 def generate_food_entry(nutrition_data):
-    food = random.choice(nutrition_data)
-    servings = random.randint(1, 4)
+    # Filter for healthier foods (you'd need to add categories to your nutrition data)
+    # For now, we'll use a simple calorie and protein check
+    healthy_foods = [
+        food for food in nutrition_data 
+        if (food.get("calories", 0) < 500 and food.get("protein", 0) > 5)
+    ]
+    
+    food = random.choice(healthy_foods if healthy_foods else nutrition_data)
+    servings = random.uniform(0.5, 2.5)  # More precise portion control
     
     return {
         "name": food["name"],
-        "servings": servings,
+        "servings": round(servings, 1),
         "calories": food.get("calories") or 0,
         "fat": food.get("fat") or 0,
         "protein": food.get("protein") or 0,
@@ -40,7 +47,7 @@ def generate_food_entry(nutrition_data):
     }
 
 def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
-    # Generate 3-6 random foods
+    # Generate 4-6 meals (fit people eat more frequent, smaller meals)
     foods = []
     total_calories = 0
     total_fat = 0
@@ -49,7 +56,7 @@ def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
     total_sugars = 0
     total_saturated_fats = 0
 
-    for _ in range(random.randint(2, 4)):
+    for _ in range(random.randint(4, 6)):
         food = generate_food_entry(nutrition_data)
         multiplier = food["servings"]
         foods.append(food)
@@ -60,14 +67,20 @@ def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
         total_sugars += food["sugars"] * multiplier
         total_saturated_fats += food["saturatedFats"] * multiplier
 
-    # Generate 1-3 random exercises
+    # Generate 2-4 exercises (fit people exercise more)
     exercises = []
     total_calories_burned = 0
     exercise_names = list(exercise_data.keys())
+    
+    # Filter for more intense exercises
+    intense_exercises = [
+        name for name in exercise_names 
+        if exercise_data[name]["calories_155lbs"] > 400  # Higher intensity threshold
+    ]
 
-    for _ in range(random.randint(1, 3)):
-        exercise_name = random.choice(exercise_names)
-        minutes = random.randint(15, 90)
+    for _ in range(random.randint(2, 4)):
+        exercise_name = random.choice(intense_exercises if intense_exercises else exercise_names)
+        minutes = random.randint(30, 120)  # Longer workout sessions
         calories_burned = int((exercise_data[exercise_name]["calories_155lbs"] / 60) * minutes)
         exercises.append({
             "name": exercise_name,
@@ -76,9 +89,9 @@ def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
         })
         total_calories_burned += calories_burned
 
-    # Generate 1-3 random workouts
+    # Generate 2-4 workouts (more strength training)
     workouts = []
-    for _ in range(random.randint(1, 3)):
+    for _ in range(random.randint(2, 4)):
         workout = random.choice(workout_data)
         workouts.append({
             "bodyPart": workout["bodyPart"],
@@ -110,19 +123,17 @@ def generate_history(num_days):
     current_date = start_date
     
     while current_date <= end_date:
-        if random.random() < 0.8:  # 80% chance of having an entry for any given day
-            entries.append(generate_daily_entry(current_date, exercise_data, workout_data, nutrition_data))
+        entries.append(generate_daily_entry(current_date, exercise_data, workout_data, nutrition_data))
         current_date += timedelta(days=1)
     
     history = {"entries": entries}
     
-    # Save to file
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    output_path = os.path.join(current_dir, 'mock_data.json')
+    output_path = os.path.join(current_dir, 'mock_health_data.json')
     with open(output_path, 'w') as f:
         json.dump(history, f, indent=2)
     
     print(f"Generated {len(entries)} days of mock data")
 
 if __name__ == "__main__":
-    generate_history(30)  # Generate 30 days of mock data
+    generate_history(365)  # Generate 365 days of mock data
