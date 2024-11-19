@@ -8,18 +8,48 @@ import { API_URL } from '../config';
 interface FoodItem {
   name: string;
   calories: number;
+  fat: number;
+  protein: number;
+  carbohydrates: number;
+  sugars: number;
+  saturatedFats: number;
 }
 
 interface NutritionCalculatorProps {
-  onSubmit: (foods: Array<{ name: string, servings: number, calories: number }>, totalCalories: number) => void;
+  onSubmit: (foods: Array<{
+    name: string;
+    servings: number;
+    calories: number;
+    fat: number;
+    protein: number;
+    carbohydrates: number;
+    sugars: number;
+    saturatedFats: number;
+  }>, totalCalories: number) => void;
 }
 
 const NutritionCalculator: React.FC<NutritionCalculatorProps> = ({ onSubmit }) => {
-  const [food, setFood] = useState({ name: '', servings: 0, calories: 0 });
+  const [food, setFood] = useState({ 
+    name: '', 
+    servings: 0, 
+    calories: 0,
+    fat: 0,
+    protein: 0,
+    carbohydrates: 0,
+    sugars: 0,
+    saturatedFats: 0
+  });
   const [searchText, setSearchText] = useState('');
   const [searchResults, setSearchResults] = useState<FoodItem[]>([]);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [baseCalories, setBaseCalories] = useState(0);
+  const [baseValues, setBaseValues] = useState({
+    calories: 0,
+    fat: 0,
+    protein: 0,
+    carbohydrates: 0,
+    sugars: 0,
+    saturatedFats: 0
+  });
   const [displayedCalories, setDisplayedCalories] = useState<number | null>(null);
 
   const handleSearch = async (text: string) => {
@@ -43,9 +73,21 @@ const NutritionCalculator: React.FC<NutritionCalculatorProps> = ({ onSubmit }) =
     setFood({
       name: selectedFood.name,
       servings: food.servings,
-      calories: selectedFood.calories
+      calories: selectedFood.calories,
+      fat: selectedFood.fat,
+      protein: selectedFood.protein,
+      carbohydrates: selectedFood.carbohydrates,
+      sugars: selectedFood.sugars || 0,
+      saturatedFats: selectedFood.saturatedFats || 0
     });
-    setBaseCalories(selectedFood.calories);
+    setBaseValues({
+      calories: selectedFood.calories,
+      fat: selectedFood.fat,
+      protein: selectedFood.protein,
+      carbohydrates: selectedFood.carbohydrates,
+      sugars: selectedFood.sugars || 0,
+      saturatedFats: selectedFood.saturatedFats || 0
+    });
     setSearchText(selectedFood.name);
     setShowDropdown(false);
   };
@@ -55,7 +97,12 @@ const NutritionCalculator: React.FC<NutritionCalculatorProps> = ({ onSubmit }) =
     setFood({
       ...food,
       servings,
-      calories: baseCalories * servings
+      calories: baseValues.calories * servings,
+      fat: baseValues.fat * servings,
+      protein: baseValues.protein * servings,
+      carbohydrates: baseValues.carbohydrates * servings,
+      sugars: baseValues.sugars * servings,
+      saturatedFats: baseValues.saturatedFats * servings
     });
   };
 
@@ -65,11 +112,27 @@ const NutritionCalculator: React.FC<NutritionCalculatorProps> = ({ onSubmit }) =
       return;
     }
 
-    const totalCalories = baseCalories * food.servings;
-    onSubmit([{ ...food, calories: totalCalories }], totalCalories);
+    const totalCalories = baseValues.calories * food.servings;
+    onSubmit([{ ...food }], totalCalories);
     setDisplayedCalories(totalCalories);
-    setFood({ name: '', servings: 0, calories: 0 });
-    setBaseCalories(0);
+    setFood({ 
+      name: '', 
+      servings: 0, 
+      calories: 0,
+      fat: 0,
+      protein: 0,
+      carbohydrates: 0,
+      sugars: 0,
+      saturatedFats: 0 
+    });
+    setBaseValues({
+      calories: 0,
+      fat: 0,
+      protein: 0,
+      carbohydrates: 0,
+      sugars: 0,
+      saturatedFats: 0
+    });
     setSearchText('');
     Keyboard.dismiss();
     Alert.alert('Success', 'Nutrition Data Logged Successfully');
@@ -145,9 +208,11 @@ const NutritionCalculator: React.FC<NutritionCalculatorProps> = ({ onSubmit }) =
         </TouchableOpacity>
 
         {displayedCalories !== null && (
-          <Text style={styles.totalCalories}>
-            Total Calories: {displayedCalories}
-          </Text>
+          <View style={styles.nutritionInfo}>
+            <Text style={styles.totalCalories}>
+              Total Calories: {displayedCalories}
+            </Text>
+          </View>
         )}
       </View>
     </TouchableWithoutFeedback>
@@ -255,6 +320,14 @@ const styles = StyleSheet.create({
     color: '#666',
     fontWeight: 'bold',
     lineHeight: 18,
+  },
+  nutritionInfo: {
+    marginTop: 16,
+    alignItems: 'center',
+  },
+  macroText: {
+    fontSize: 16,
+    marginTop: 4,
   },
 });
 

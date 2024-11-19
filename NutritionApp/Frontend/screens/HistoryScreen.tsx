@@ -19,6 +19,11 @@ interface FoodEntry {
   name: string;
   servings: number;
   calories: number;
+  fat: number;
+  protein: number;
+  carbohydrates: number;
+  sugars: number;
+  saturatedFats: number;
 }
 
 interface DayEntry {
@@ -26,11 +31,32 @@ interface DayEntry {
   exercises: Exercise[];
   totalCaloriesBurned: number;
   totalCaloriesConsumed: number;
+  totalFat: number;
+  totalProtein: number;
+  totalCarbohydrates: number;
+  totalSugars: number;
+  totalSaturatedFats: number;
   foods: FoodEntry[];
   workouts: Workout[];
 }
 
 type SectionItem = Exercise | FoodEntry | Workout;
+
+const calculateDayMacros = (foods: FoodEntry[]) => {
+  return foods.reduce((totals, food) => ({
+    fat: totals.fat + (food.fat || 0),
+    protein: totals.protein + (food.protein || 0),
+    carbohydrates: totals.carbohydrates + (food.carbohydrates || 0),
+    sugars: totals.sugars + (food.sugars || 0),
+    saturatedFats: totals.saturatedFats + (food.saturatedFats || 0),
+  }), {
+    fat: 0,
+    protein: 0,
+    carbohydrates: 0,
+    sugars: 0,
+    saturatedFats: 0,
+  });
+};
 
 const HistoryScreen = () => {
   const [historyData, setHistoryData] = useState<DayEntry[]>([]);
@@ -126,20 +152,40 @@ const HistoryScreen = () => {
         </View>
 
         {isExpanded && (
-          <FlatList<SectionItem>
-            data={sectionData}
-            renderItem={({ item }) => {
-              if (section === 'exercise') {
-                return renderExerciseDetails({ item: item as Exercise });
-              } else if (section === 'nutrition') {
-                return renderFoodDetails({ item: item as FoodEntry });
-              } else {
-                return renderWorkoutDetails({ item: item as Workout });
-              }
-            }}
-            keyExtractor={(item, index) => `${date}-${section}-${index}`}
-            scrollEnabled={false}
-          />
+          <>
+            <FlatList
+              data={sectionData}
+              renderItem={({ item }) => {
+                if (section === 'exercise') {
+                  return renderExerciseDetails({ item: item as Exercise });
+                } else if (section === 'nutrition') {
+                  return renderFoodDetails({ item: item as FoodEntry });
+                } else {
+                  return renderWorkoutDetails({ item: item as Workout });
+                }
+              }}
+              keyExtractor={(item, index) => `${date}-${section}-${index}`}
+              scrollEnabled={false}
+            />
+            
+            {section === 'nutrition' && sectionData.length > 0 && (
+              <View style={styles.macroTotalsContainer}>
+                <Text style={styles.macroTotalsTitle}>Total Macros:</Text>
+                {(() => {
+                  const totals = calculateDayMacros(sectionData);
+                  return (
+                    <View style={styles.macroTotalsGrid}>
+                      <Text style={styles.macroTotal}>Fat: {totals.fat.toFixed(1)}g</Text>
+                      <Text style={styles.macroTotal}>Protein: {totals.protein.toFixed(1)}g</Text>
+                      <Text style={styles.macroTotal}>Carbs: {totals.carbohydrates.toFixed(1)}g</Text>
+                      <Text style={styles.macroTotal}>Sugars: {totals.sugars.toFixed(1)}g</Text>
+                      <Text style={styles.macroTotal}>Sat. Fat: {totals.saturatedFats.toFixed(1)}g</Text>
+                    </View>
+                  );
+                })()}
+              </View>
+            )}
+          </>
         )}
       </TouchableOpacity>
     );
@@ -277,6 +323,29 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 14,
     marginBottom: 2,
+  },
+  macroTotalsContainer: {
+    marginTop: 12,
+    padding: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 8,
+  },
+  macroTotalsTitle: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  macroTotalsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  macroTotal: {
+    color: COLORS.white,
+    fontSize: 14,
+    width: '50%',
+    marginBottom: 4,
   },
 });
 

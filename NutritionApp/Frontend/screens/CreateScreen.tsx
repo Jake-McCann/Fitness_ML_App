@@ -89,10 +89,34 @@ const CreateScreen = () => {
   };
 
   const handleNutritionSubmit = async (
-    foods: Array<{ name: string; calories: number; servings: number }>,
+    foods: Array<{
+      name: string;
+      calories: number;
+      servings: number;
+      fat: number;
+      protein: number;
+      carbohydrates: number;
+      sugars: number;
+      saturatedFats: number;
+    }>,
     totalCalories: number
   ) => {
     try {
+      // Calculate total macros
+      const totalMacros = foods.reduce((totals, food) => ({
+        fat: totals.fat + (food.fat || 0),
+        protein: totals.protein + (food.protein || 0),
+        carbohydrates: totals.carbohydrates + (food.carbohydrates || 0),
+        sugars: totals.sugars + (food.sugars || 0),
+        saturatedFats: totals.saturatedFats + (food.saturatedFats || 0),
+      }), {
+        fat: 0,
+        protein: 0,
+        carbohydrates: 0,
+        sugars: 0,
+        saturatedFats: 0,
+      });
+
       const response = await fetch(`${API_URL}/api/history`, {
         method: 'POST',
         headers: {
@@ -102,6 +126,11 @@ const CreateScreen = () => {
           date: date.toISOString().split('T')[0],
           foods,
           totalCaloriesConsumed: totalCalories,
+          totalFat: totalMacros.fat,
+          totalProtein: totalMacros.protein,
+          totalCarbohydrates: totalMacros.carbohydrates,
+          totalSugars: totalMacros.sugars,
+          totalSaturatedFats: totalMacros.saturatedFats,
         }),
       });
 

@@ -119,30 +119,32 @@ const WorkoutCalculator: React.FC<WorkoutCalculatorProps> = ({ onSubmit }) => {
       <ScrollView style={styles.container}>
         <Text style={styles.title}>Workout Logger</Text>
 
-        <View style={styles.searchContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Search workouts..."
-            value={searchText}
-            onChangeText={(text) => handleSearch(text)}
-            onFocus={() => setShowDropdown(true)}
-            placeholderTextColor="rgba(0, 0, 0, 0.4)"
-          />
-          <View style={styles.clearButtonContainer}>
-            {searchText.length > 0 && (
-              <TouchableOpacity
-                style={styles.clearButton}
-                onPress={() => {
-                  setSearchText('');
-                  setShowDropdown(false);
-                }}
-              >
-                <Text style={styles.clearButtonText}>×</Text>
-              </TouchableOpacity>
-            )}
+        <View style={styles.searchWrapper}>
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Search workouts..."
+              value={searchText}
+              onChangeText={(text) => handleSearch(text)}
+              onFocus={() => setShowDropdown(true)}
+              placeholderTextColor="rgba(0, 0, 0, 0.4)"
+            />
+            <View style={styles.clearButtonContainer}>
+              {searchText.length > 0 && (
+                <TouchableOpacity
+                  style={styles.clearButton}
+                  onPress={() => {
+                    setSearchText('');
+                    setShowDropdown(false);
+                  }}
+                >
+                  <Text style={styles.clearButtonText}>×</Text>
+                </TouchableOpacity>
+              )}
+            </View>
           </View>
+          {renderDropdown()}
         </View>
-        {renderDropdown()}
 
         <View style={styles.intensityContainer}>
           <Text style={styles.label}>Intensity</Text>
@@ -220,14 +222,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
   },
+  searchWrapper: {
+    position: 'relative',
+    marginBottom: 16,
+    flex: 1,
+    marginRight: 8,
+  },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
-    marginBottom: 16,
-    position: 'relative',
   },
   input: {
     flex: 1,
@@ -237,15 +243,15 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     position: 'absolute',
-    top: 90,
-    left: 16,
-    right: 16,
+    top: '100%',
+    left: 0,
+    right: 0,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 8,
     zIndex: 1000,
-    marginTop: 4,
+    elevation: 3,
   },
   dropdownItem: {
     padding: 12,

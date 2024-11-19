@@ -57,6 +57,11 @@ def add_history_entry():
             existing_entry['totalCaloriesConsumed'] = (
                 existing_entry.get('totalCaloriesConsumed', 0) + data['totalCaloriesConsumed']
             )
+            existing_entry['totalFat'] = sum(food['fat'] for food in existing_entry['foods'])
+            existing_entry['totalProtein'] = sum(food['protein'] for food in existing_entry['foods'])
+            existing_entry['totalCarbohydrates'] = sum(food['carbohydrates'] for food in existing_entry['foods'])
+            existing_entry['totalSugars'] = sum(food['sugars'] for food in existing_entry['foods'])
+            existing_entry['totalSaturatedFats'] = sum(food['saturatedFats'] for food in existing_entry['foods'])
         elif 'workouts' in data:
             if 'workouts' not in existing_entry:
                 existing_entry['workouts'] = []
