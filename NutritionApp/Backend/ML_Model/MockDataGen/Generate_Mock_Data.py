@@ -5,20 +5,27 @@ import os
 
 def load_data_files():
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(os.path.dirname(current_dir))  # Go up to Backend directory
+    # Go up to Backend directory (not ML_Model)
+    backend_dir = os.path.dirname(os.path.dirname(current_dir))
+    
+    # Define datasets directory
+    datasets_dir = os.path.join(backend_dir, 'Datasets')
+    
+    print(f"Looking for datasets in: {datasets_dir}")  # Debug print
     
     # Load exercise data
-    exercise_path = os.path.join(parent_dir, 'Backend/Datasets', 'exercise_calories.json')
+    exercise_path = os.path.join(datasets_dir, 'exercise_calories.json')
+    print(f"Exercise path: {exercise_path}")  # Debug print
     with open(exercise_path, 'r') as f:
         exercise_data = json.load(f)
     
     # Load workout data
-    workout_path = os.path.join(parent_dir, 'Backend/Datasets', 'exercises.json')
+    workout_path = os.path.join(datasets_dir, 'exercises.json')
     with open(workout_path, 'r') as f:
         workout_data = json.load(f)
     
     # Load nutrition data
-    nutrition_path = os.path.join(parent_dir, 'Backend/Datasets', 'nutrition.json')
+    nutrition_path = os.path.join(datasets_dir, 'nutrition.json')
     with open(nutrition_path, 'r') as f:
         nutrition_data = json.load(f)
     
@@ -67,7 +74,7 @@ def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
         total_sugars += food["sugars"] * multiplier
         total_saturated_fats += food["saturatedFats"] * multiplier
 
-    # Generate 2-4 exercises (fit people exercise more)
+    # Generate exercises
     exercises = []
     total_calories_burned = 0
     exercise_names = list(exercise_data.keys())
@@ -75,12 +82,13 @@ def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
     # Filter for more intense exercises
     intense_exercises = [
         name for name in exercise_names 
-        if exercise_data[name]["calories_155lbs"] > 400  # Higher intensity threshold
+        if exercise_data[name]["calories_155lbs"] > 400
     ]
 
+    # Generate regular exercises
     for _ in range(random.randint(2, 4)):
         exercise_name = random.choice(intense_exercises if intense_exercises else exercise_names)
-        minutes = random.randint(30, 120)  # Longer workout sessions
+        minutes = random.randint(30, 120)
         calories_burned = int((exercise_data[exercise_name]["calories_155lbs"] / 60) * minutes)
         exercises.append({
             "name": exercise_name,
@@ -89,7 +97,7 @@ def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
         })
         total_calories_burned += calories_burned
 
-    # Generate 2-4 workouts (more strength training)
+    # Generate workouts
     workouts = []
     for _ in range(random.randint(2, 4)):
         workout = random.choice(workout_data)
@@ -98,6 +106,19 @@ def generate_daily_entry(date, exercise_data, workout_data, nutrition_data):
             "title": workout["title"],
             "type": workout["type"]
         })
+        
+    # Add weight lifting exercises based on workouts
+    if workouts:
+        weight_training_minutes = len(workouts) * 10
+        calories_per_minute = 10.5  # Vigorous weight lifting
+        weight_training_calories = int(weight_training_minutes * calories_per_minute)
+        
+        exercises.append({
+            "name": "Weight lifting, body building, vigorous",
+            "minutes": weight_training_minutes,
+            "caloriesBurned": weight_training_calories
+        })
+        total_calories_burned += weight_training_calories
 
     return {
         "date": date.strftime("%Y-%m-%d"),

@@ -6,7 +6,6 @@ def calculate_daily_changes(prev_metrics, day_data):
     changes = {
         "weightChange": 0,
         "cardiovascularEndurance": 0,
-        "flexibility": 0,
         "muscleStrength": {}
     }
     
@@ -16,25 +15,28 @@ def calculate_daily_changes(prev_metrics, day_data):
     sugar = day_data.get("totalSugars", 0)
     saturated_fat = day_data.get("totalSaturatedFats", 0)
     
-    # Weight change calculation
-    base_weight_change = -caloric_balance / 3500  # Base calories to pounds
-    sugar_impact = sugar * 0.01  # Extra weight retention from high sugar
-    sat_fat_impact = saturated_fat * 0.01  # Extra weight from saturated fat
-    changes["weightChange"] = base_weight_change + sugar_impact + sat_fat_impact
+    # Weight change calculation (fixed)
+    base_weight_change = caloric_balance / 3500  
     
-    # Cardiovascular changes
+    # Adjust for protein's effect on muscle preservation/growth during deficit
+    protein_factor = min(protein / 150, 1.0)  # Normalize protein intake
+    
+    # In a deficit, protein helps preserve muscle mass, reducing weight loss slightly
+    # In a surplus, protein helps build muscle, increasing weight gain slightly
+    if base_weight_change < 0:
+        base_weight_change *= (1 - (protein_factor * 0.2))  # Slow weight loss by up to 20% with optimal protein
+    else:
+        base_weight_change *= (1 + (protein_factor * 0.1))  # Increase weight gain by up to 10% with optimal protein
+    
+    changes["weightChange"] = base_weight_change
+    
+    # Enhanced cardiovascular changes (doubled impact)
     cardio_impact = 0
     for exercise in day_data.get("exercises", []):
         intensity_factor = exercise.get("caloriesBurned", 0) / exercise.get("minutes", 1)
-        cardio_impact += (intensity_factor * exercise.get("minutes", 0)) / 1000
-    sat_fat_penalty = saturated_fat * -0.01  # Negative impact from saturated fat
-    changes["cardiovascularEndurance"] = min(cardio_impact + sat_fat_penalty, 2.0)
-    
-    # Flexibility calculation with sugar penalty
-    flexibility_exercises = sum(1 for workout in day_data.get("workouts", []) 
-                              if workout.get("type") == "Stretching")
-    sugar_flexibility_impact = sugar * -0.005  # Small negative impact from sugar
-    changes["flexibility"] = (flexibility_exercises * 0.2) - 0.1 + sugar_flexibility_impact
+        cardio_impact += (intensity_factor * exercise.get("minutes", 0)) / 500  # Reduced divisor from 1000
+    sat_fat_penalty = saturated_fat * -0.02  # Doubled negative impact
+    changes["cardiovascularEndurance"] = min(cardio_impact + sat_fat_penalty, 4.0)  # Doubled max daily gain
     
     # Enhanced muscle strength calculations
     muscle_groups = {
@@ -44,17 +46,17 @@ def calculate_daily_changes(prev_metrics, day_data):
         "neck": 0, "quadriceps": 0, "shoulders": 0, "traps": 0, "triceps": 0
     }
     
-    protein_factor = min(protein / 150, 1.0)  # Protein impact on muscle growth
+    protein_factor = min(protein / 150, 1.0)
     
     for workout in day_data.get("workouts", []):
         target = workout.get("bodyPart", "").lower()
         if target in muscle_groups:
-            muscle_groups[target] += 0.3 * (1 + protein_factor)  # Protein enhances gains
+            muscle_groups[target] += 0.6 * (1 + protein_factor)  # Doubled gain from 0.3
     
-    # Apply small decay to unused muscles
+    # Apply larger decay to unused muscles
     for muscle in muscle_groups:
         if muscle_groups[muscle] == 0:
-            muscle_groups[muscle] = -0.1 * (1 - protein_factor)  # Protein helps prevent loss
+            muscle_groups[muscle] = -0.2 * (1 - protein_factor)  # Doubled decay from -0.1
             
     changes["muscleStrength"] = muscle_groups
     return changes
@@ -71,7 +73,6 @@ def generate_health_output(input_file, output_file):
     baseline_metrics = {
         "weightChange": 0.0,
         "cardiovascularEndurance": 100.0,
-        "flexibility": 100.0,
         "muscleStrength": {
             "abdominals": 100.0, "abductors": 100.0, "adductors": 100.0,
             "biceps": 100.0, "calves": 100.0, "chest": 100.0,
@@ -100,7 +101,6 @@ def generate_health_output(input_file, output_file):
             "date": date_str,
             "weightChange": current_metrics["weightChange"],
             "cardiovascularEndurance": current_metrics["cardiovascularEndurance"],
-            "flexibility": current_metrics["flexibility"],
             "muscleStrength": current_metrics["muscleStrength"].copy()
         }
         output["healthMetrics"].append(daily_metrics)
@@ -111,13 +111,11 @@ def generate_health_output(input_file, output_file):
             
             # Apply changes to current metrics
             current_metrics["weightChange"] += changes["weightChange"]
-            current_metrics["cardiovascularEndurance"] = max(0, min(105, 
+            current_metrics["cardiovascularEndurance"] = max(0, min(110, 
                 current_metrics["cardiovascularEndurance"] + changes["cardiovascularEndurance"]))
-            current_metrics["flexibility"] = max(0, min(105, 
-                current_metrics["flexibility"] + changes["flexibility"]))
             
             for muscle, change in changes["muscleStrength"].items():
-                current_metrics["muscleStrength"][muscle] = max(0, min(105, 
+                current_metrics["muscleStrength"][muscle] = max(0, min(110, 
                     current_metrics["muscleStrength"][muscle] + change))
         
         current_date += timedelta(days=1)
