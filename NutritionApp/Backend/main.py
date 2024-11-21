@@ -3,6 +3,7 @@ from flask_cors import CORS
 import json
 import os
 from datetime import datetime
+from ML_Model.Model.predict import load_and_predict
 
 app = Flask(__name__)
 CORS(app)
@@ -111,13 +112,21 @@ def calculate_calories():
 @app.route('/api/suggestions', methods=['POST'])
 def get_suggestions():
     data = request.json
-    goal_type = data.get('goalType')
-    goal_value = data.get('goalValue')
-    timeframe = data.get('timeframe')
+    timeframe_days = data.get('timeframe_days')
+    target_metrics = data.get('target_metrics')
     
-    # Process through ML model and get suggestions
-    suggestions = generate_suggestions(goal_type, goal_value, timeframe)
-    return jsonify(suggestions)
+    if not timeframe_days or not target_metrics:
+        return jsonify({'error': 'Missing required parameters'}), 400
+        
+    try:
+        recommendations = load_and_predict(
+            history_data_path='Datasets/history.json',
+            target_metrics=target_metrics,
+            timeframe_days=timeframe_days
+        )
+        return jsonify(recommendations)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
 @app.route('/api/nutrition/search', methods=['GET'])
 def search_nutrition():
