@@ -24,6 +24,11 @@ interface Recommendation {
       }>;
     };
   };
+  differences: {
+    weightChange: number;
+    cardiovascularEndurance: number;
+    muscleStrength: { [key: string]: number };
+  };
 }
 
 interface MuscleTarget {
@@ -86,9 +91,6 @@ const SuggestionsScreen = () => {
         muscleStrength
       };
 
-      // Log target metrics to console
-      console.log('Target Metrics:', JSON.stringify(target_metrics, null, 2));
-
       // Make API call to get suggestions
       const response = await fetch(`${API_URL}/api/suggestions`, {
         method: 'POST',
@@ -106,6 +108,8 @@ const SuggestionsScreen = () => {
       }
 
       const data = await response.json();
+      
+      // data now includes predicted, target, and differences
       setRecommendations(data);
     } catch (error) {
       console.error('Error:', error);
@@ -118,24 +122,33 @@ const SuggestionsScreen = () => {
   const renderRecommendations = () => {
     if (!recommendations) return null;
 
-    const { diet, exercise } = recommendations.recommendedChanges;
+    const { differences } = recommendations;
+
+    const formatDifference = (diff: number) => {
+      const sign = diff > 0 ? '+' : '';
+      return `${sign}${diff.toFixed(1)}%`;
+    };
 
     return (
       <View style={styles.recommendationsContainer}>
-        <Text style={styles.sectionTitle}>Diet Recommendations:</Text>
-        <Text>Calories: {diet.calorie_adjustment.toFixed(1)} kcal</Text>
-        <Text>Protein: {diet.protein_adjustment.toFixed(1)} g</Text>
-        <Text>Carbs: {diet.carbs_adjustment.toFixed(1)} g</Text>
-        <Text>Fat: {diet.fat_adjustment.toFixed(1)} g</Text>
+        <Text style={styles.sectionTitle}>Goal Progress Predictions:</Text>
+        
+        <Text style={styles.subTitle}>Weight Change:</Text>
+        <Text style={styles.difference}>
+          {formatDifference(differences.weightChange)} from target
+        </Text>
 
-        <Text style={styles.sectionTitle}>Exercise Recommendations:</Text>
-        <Text style={styles.subTitle}>Cardiovascular:</Text>
-        <Text>{exercise.cardiovascular.recommendation}</Text>
+        <Text style={styles.subTitle}>Cardiovascular Endurance:</Text>
+        <Text style={styles.difference}>
+          {formatDifference(differences.cardiovascularEndurance)} from target
+        </Text>
 
-        <Text style={styles.subTitle}>Muscle Focus:</Text>
-        {exercise.muscle_focus.map((focus, index) => (
-          <View key={index} style={styles.muscleItem}>
-            <Text>• {focus.muscle}: {focus.recommendation}</Text>
+        <Text style={styles.subTitle}>Muscle Strength:</Text>
+        {Object.entries(differences.muscleStrength).map(([muscle, diff]) => (
+          <View key={muscle} style={styles.muscleItem}>
+            <Text>
+              • {muscle.charAt(0).toUpperCase() + muscle.slice(1)}: {formatDifference(diff)} from target
+            </Text>
           </View>
         ))}
       </View>
@@ -212,13 +225,35 @@ const SuggestionsScreen = () => {
         />
 
         <Text style={styles.label}>Weight Change (lbs):</Text>
-        <TextInput
-          style={styles.input}
-          value={weightChange}
-          onChangeText={setWeightChange}
-          keyboardType="numeric"
-          placeholder="Enter target weight change"
-        />
+        <View style={styles.weightInputContainer}>
+          <View style={styles.signButtonsContainer}>
+            <TouchableOpacity 
+              style={[
+                styles.signButton, 
+                weightChange.startsWith('-') ? styles.signButtonInactive : styles.signButtonActive
+              ]}
+              onPress={() => setWeightChange(prev => prev.replace('-', ''))}
+            >
+              <Text style={styles.signButtonText}>+</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[
+                styles.signButton, 
+                weightChange.startsWith('-') ? styles.signButtonActive : styles.signButtonInactive
+              ]}
+              onPress={() => setWeightChange(prev => prev.startsWith('-') ? prev.replace('-', '') : `-${prev}`)}
+            >
+              <Text style={styles.signButtonText}>-</Text>
+            </TouchableOpacity>
+          </View>
+          <TextInput
+            style={[styles.input, styles.weightInput]}
+            value={weightChange.replace('-', '')}
+            onChangeText={(text) => setWeightChange(prev => prev.startsWith('-') ? `-${text}` : text)}
+            keyboardType="numeric"
+            placeholder="Enter target weight change"
+          />
+        </View>
 
         <Text style={styles.label}>Cardiovascular Improvement (%):</Text>
         <TextInput
@@ -282,19 +317,27 @@ const styles = StyleSheet.create({
   },
   recommendationsContainer: {
     marginTop: 20,
+    padding: 15,
+    backgroundColor: COLORS.white,
+    borderRadius: 10,
+    shadowColor: COLORS.darkPurple,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
     color: COLORS.darkPurple,
-    marginTop: 15,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   subTitle: {
     fontSize: 16,
     fontWeight: 'bold',
     marginTop: 10,
     marginBottom: 5,
+    color: COLORS.darkPurple,
   },
   muscleItem: {
     marginLeft: 10,
@@ -367,6 +410,40 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
     justifyContent: 'center',
     padding: 20,
+  },
+  difference: {
+    fontSize: 16,
+    marginBottom: 5,
+    color: COLORS.darkPurple,
+  },
+  weightInputContainer: {
+    marginBottom: 15,
+  },
+  signButtonsContainer: {
+    flexDirection: 'row',
+    marginBottom: 5,
+    gap: 10,
+  },
+  signButton: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 20,
+  },
+  signButtonActive: {
+    backgroundColor: COLORS.darkPurple,
+  },
+  signButtonInactive: {
+    backgroundColor: COLORS.lightPurple,
+  },
+  signButtonText: {
+    color: COLORS.white,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  weightInput: {
+    marginBottom: 0,
   },
 });
 

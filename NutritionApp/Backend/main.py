@@ -4,6 +4,7 @@ import json
 import os
 from datetime import datetime
 from ML_Model.Model.predict import load_and_predict
+import traceback
 
 app = Flask(__name__)
 CORS(app)
@@ -111,21 +112,33 @@ def calculate_calories():
 
 @app.route('/api/suggestions', methods=['POST'])
 def get_suggestions():
-    data = request.json
-    timeframe_days = data.get('timeframe_days')
-    target_metrics = data.get('target_metrics')
-    
-    if not timeframe_days or not target_metrics:
-        return jsonify({'error': 'Missing required parameters'}), 400
-        
     try:
-        recommendations = load_and_predict(
-            history_data_path='Datasets/history.json',
-            target_metrics=target_metrics,
-            timeframe_days=timeframe_days
-        )
-        return jsonify(recommendations)
+        data = request.get_json()
+        timeframe_days = data.get('timeframe_days')
+        target_metrics = data.get('target_metrics')
+        
+        if not timeframe_days or not target_metrics:
+            return jsonify({'error': 'Missing required parameters'}), 400
+        
+        print("\n=== User's Target Metrics ===")
+        print(json.dumps(target_metrics, indent=2))
+            
+        predictions = load_and_predict(timeframe_days, target_metrics)
+        
+        print("\n=== Model's Final Prediction ===")
+        print(json.dumps(predictions['predicted'], indent=2))
+        
+        print("\n=== Percentage Differences ===")
+        print(json.dumps(predictions['differences'], indent=2))
+        
+        return jsonify(predictions)
+        
     except Exception as e:
+        print(f"Error in /api/suggestions:")
+        print(f"Type: {type(e).__name__}")
+        print(f"Message: {str(e)}")
+        print("Traceback:")
+        print(traceback.format_exc())
         return jsonify({'error': str(e)}), 500
 
 @app.route('/api/nutrition/search', methods=['GET'])
@@ -165,4 +178,4 @@ def search_workouts():
     return jsonify(matches)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000, debug=True)

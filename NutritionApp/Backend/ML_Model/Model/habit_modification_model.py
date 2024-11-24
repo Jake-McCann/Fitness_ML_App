@@ -1,350 +1,271 @@
-import pandas as pd
-import numpy as np
 from sklearn.preprocessing import StandardScaler
 import tensorflow as tf
 from typing import Dict, List, Tuple
 import glob
 import json
 import os
+import numpy as np
+import pickle
+from datetime import datetime, timedelta
 
 class HabitModificationModel:
     def __init__(self):
         self.scaler = StandardScaler()
-        # Add muscle name mapping
-        self.muscle_mapping = {
-            "abdominals": 0, "abductors": 1, "adductors": 2, "biceps": 3,
-            "calves": 4, "chest": 5, "forearms": 6, "glutes": 7,
-            "hamstrings": 8, "lats": 9, "lowerBack": 10, "middleBack": 11,
-            "neck": 12, "quadriceps": 13, "shoulders": 14, "traps": 15, "triceps": 16,
-            "none": 17
-        }
-        self.reverse_muscle_mapping = {v: k for k, v in self.muscle_mapping.items()}
         self.modification_model = self._build_model()
         self.modification_model.compile(
             optimizer='adam',
-            loss={
-                'diet_modifications': 'mse',
-                'exercise_modifications': 'mse'
-            },
-            metrics={
-                'diet_modifications': ['mae'],
-                'exercise_modifications': ['mae']
-            }
+            loss='mse',
+            metrics=['mae']
+        )
+
+    def _build_model(self) -> tf.keras.Model:
+        # Changed input shape from (30, 26) to (26,) - single day features
+        inputs = tf.keras.Input(shape=(26,))
+        
+        # Replace LSTM layers with Dense layers
+        x = tf.keras.layers.Dense(256, activation='relu')(inputs)
+        x = tf.keras.layers.BatchNormalization()(x)
+        x = tf.keras.layers.Dropout(0.2)(x)
+        
+        x = tf.keras.layers.Dense(128, activation='relu')(x)
+        x = tf.keras.layers.BatchNormalization()(x)
+        x = tf.keras.layers.Dropout(0.2)(x)
+        
+        outputs = tf.keras.layers.Dense(19)(x)
+        
+        model = tf.keras.Model(inputs=inputs, outputs=outputs)
+        optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+        model.compile(
+            optimizer=optimizer,
+            loss='mse',
+            metrics=['mae']
         )
         
-    def _build_model(self) -> tf.keras.Model:
-        """Build the neural network model"""
-        input_layer = tf.keras.layers.Input(shape=(7, 11))
+        return model
+
+    def _process_entry(self, entry: Dict) -> Tuple[List[float], List[float]]:
+        # Extract features
+        features = [
+            entry.get('totalCaloriesConsumed', 0),
+            entry.get('totalFat', 0),
+            entry.get('totalProtein', 0),
+            entry.get('totalCarbohydrates', 0),
+            entry.get('totalSugars', 0),
+            entry.get('totalSaturatedFats', 0),
+            len(entry.get('exercises', [])),  # numExercises
+            sum(ex.get('minutes', 0) for ex in entry.get('exercises', [])),  # exerciseMinutes
+            entry.get('totalCaloriesBurned', 0)
+        ]
+
+        # Add boolean flags for worked muscle groups
+        worked_muscles = {workout['bodyPart'].lower() for workout in entry.get('workouts', [])}
+        muscle_groups = ['abdominals', 'abductors', 'adductors', 'biceps', 'calves', 
+                        'chest', 'forearms', 'glutes', 'hamstrings', 'lats', 
+                        'lowerback', 'middleback', 'neck', 'quadriceps', 'shoulders', 
+                        'traps', 'triceps']
         
-        # Flatten the input to work with Dense layers
-        x = tf.keras.layers.Flatten()(input_layer)
+        features.extend([1.0 if muscle in worked_muscles else 0.0 for muscle in muscle_groups])
+
+        return features
+
+    def _process_target(self, metrics: Dict) -> List[float]:
+        targets = [
+            metrics.get('weightChange', 0),
+            metrics.get('cardiovascularEndurance', 100)
+        ]
         
-        # Dense layers for different modification types
-        x = tf.keras.layers.Dense(128, activation='relu')(x)
-        x = tf.keras.layers.Dropout(0.2)(x)
-        x = tf.keras.layers.Dense(64, activation='relu')(x)
+        # Add muscle strength values
+        muscle_strength = metrics.get('muscleStrength', {})
+        muscle_groups = ['abdominals', 'abductors', 'adductors', 'biceps', 'calves', 
+                        'chest', 'forearms', 'glutes', 'hamstrings', 'lats', 
+                        'lowerback', 'middleback', 'neck', 'quadriceps', 'shoulders', 
+                        'traps', 'triceps']
         
-        diet_mods = tf.keras.layers.Dense(32, activation='relu')(x)
-        exercise_mods = tf.keras.layers.Dense(32, activation='relu')(x)
+        targets.extend([muscle_strength.get(muscle, 100) for muscle in muscle_groups])
         
-        # Output layers
-        diet_output = tf.keras.layers.Dense(self._get_diet_output_dim(), name='diet_modifications')(diet_mods)
-        exercise_output = tf.keras.layers.Dense(self._get_exercise_output_dim(), name='exercise_modifications')(exercise_mods)
+        return targets
+
+    def _prepare_sequences(self, features: List[List[float]], targets: List[List[float]], 
+                          sequence_length: int = 30) -> Tuple[np.ndarray, np.ndarray]:
+        """Create sequences of past days for training."""
+        X, y = [], []
         
-        return tf.keras.Model(inputs=input_layer, outputs=[diet_output, exercise_output])
-    
+        for i in range(len(features) - sequence_length):
+            X.append(features[i:i + sequence_length])
+            y.append(targets[i + sequence_length])
+        
+        return np.array(X), np.array(y)
+
     def train_on_datasets(self, data_dir: str, output_dir: str):
-        """Train model on multiple input/output dataset pairs"""
-        # Load all training data
-        input_files = glob.glob(f"{data_dir}/mock_input_*.json")
-        print(f"Found {len(input_files)} input files in {data_dir}")
+        """Train model on paired input/output files representing full years of data."""
+        input_files = glob.glob(os.path.join(data_dir, "mock_input_*.json"))
         
-        if not input_files:
-            raise ValueError(f"No input files found matching pattern 'mock_input_*.json' in {data_dir}")
-        
-        training_data = []
+        all_features = []
+        all_targets = []
         
         for input_file in input_files:
-            # Get corresponding output file
-            output_file = f"{output_dir}/mock_output_{os.path.basename(input_file).split('_')[-1]}"
-            print(f"Processing input file: {input_file}")
-            print(f"Looking for output file: {output_file}")
+            output_file = os.path.join(output_dir, f"mock_output_{os.path.basename(input_file).split('_')[-1]}")
             
-            if not os.path.exists(output_file):
-                print(f"Warning: No matching output file found for {input_file}")
-                continue
-                
-            print(f"Found matching pair, loading data...")
-            
-            # Load data pair
             with open(input_file, 'r') as f:
                 input_data = json.load(f)
             with open(output_file, 'r') as f:
                 output_data = json.load(f)
+            
+            # Match each input entry with its corresponding output metrics
+            entries = input_data['entries']
+            metrics = output_data['healthMetrics']
+            
+            for entry, metric in zip(entries, metrics):
+                features = self._process_entry(entry)
+                targets = self._process_target(metric)
                 
-            # Process into training sequences
-            X, y = self._prepare_training_sequence(input_data, output_data)
-            training_data.append((X, y))
-            print(f"Successfully processed file pair")
+                all_features.append(features)
+                all_targets.append(targets)
         
-        if not training_data:
-            raise ValueError("No valid training data pairs found. Check your data directory paths and file naming.")
+        # Convert to numpy arrays
+        X = np.array(all_features)
+        y = np.array(all_targets)
         
-        # Combine all training data
-        X_train = np.concatenate([x for x, _ in training_data])
-        y_train = [
-            np.concatenate([y[0] for _, y in training_data]),  # diet modifications
-            np.concatenate([y[1] for _, y in training_data])   # exercise modifications
-        ]
+        # Normalize features
+        X_normalized = self.scaler.fit_transform(X)
         
-        # Train model
+        # Train the model
+        early_stopping = tf.keras.callbacks.EarlyStopping(
+            monitor='val_loss',
+            patience=20,
+            restore_best_weights=True
+        )
+        
         self.modification_model.fit(
-            X_train,
-            y_train,
-            epochs=50,
+            X_normalized, y,
+            epochs=100,
             batch_size=32,
-            validation_split=0.2
+            validation_split=0.2,
+            callbacks=[early_stopping]
         )
         
-    def _prepare_training_sequence(self, 
-                                 input_data: Dict, 
-                                 output_data: Dict) -> Tuple[np.ndarray, Tuple[np.ndarray, np.ndarray]]:
-        """Convert input/output pair into training sequences"""
-        sequences = []
-        diet_targets = []
-        exercise_targets = []
-        
-        # Process each day's data into a sequence
-        for i in range(len(input_data['entries']) - 1):  # -1 because we need the next day's results
-            # Current sequence of days (e.g., 7 days of history)
-            sequence = input_data['entries'][i:i+7]
-            
-            # Extract features from sequence
-            sequence_features = self._extract_sequence_features(sequence)
-            
-            # Get target modifications (difference between current and next day)
-            current_metrics = self._extract_metrics(input_data['entries'][i])
-            next_metrics = self._extract_metrics(input_data['entries'][i+1])
-            
-            diet_target = self._compute_diet_modifications(current_metrics, next_metrics)
-            exercise_target = self._compute_exercise_modifications(current_metrics, next_metrics)
-            
-            sequences.append(sequence_features)
-            diet_targets.append(diet_target)
-            exercise_targets.append(exercise_target)
-        
-        return (
-            np.array(sequences),
-            (np.array(diet_targets), np.array(exercise_targets))
-        )
-        
-    def _extract_sequence_features(self, sequence: List[Dict]) -> np.ndarray:
-        """Extract features from a sequence of days"""
-        # Ensure consistent sequence length by padding or truncating
-        sequence_length = 7  # Fixed length for all sequences
-        if len(sequence) < sequence_length:
-            # Pad with copies of the last day if sequence is too short
-            last_day = sequence[-1]
-            sequence = sequence + [last_day] * (sequence_length - len(sequence))
-        elif len(sequence) > sequence_length:
-            # Truncate if sequence is too long
-            sequence = sequence[:sequence_length]
-        
-        features = []
-        for day in sequence:
-            day_features = [
-                day['totalCaloriesConsumed'],
-                day['totalCaloriesBurned'],
-                day['totalProtein'],
-                day['totalCarbohydrates'],
-                day['totalFat'],
-                # Exercise features
-                len(day['exercises']),
-                sum(ex['minutes'] for ex in day['exercises']),
-                sum(ex['caloriesBurned'] for ex in day['exercises']),
-                # Workout features
-                len(day['workouts']),
-                len([w for w in day['workouts'] if w['type'] == 'Strength']),
-                len([w for w in day['workouts'] if w['type'] == 'Cardio'])
-            ]
-            features.append(day_features)
-        return np.array(features)
-    
-    def _compute_diet_modifications(self, current: Dict, target: Dict) -> np.ndarray:
-        """Compute required diet modifications to reach target"""
-        return np.array([
-            target['totalCaloriesConsumed'] - current['totalCaloriesConsumed'],
-            target['totalProtein'] - current['totalProtein'],
-            target['totalCarbohydrates'] - current['totalCarbohydrates'],
-            target['totalFat'] - current['totalFat']
-        ])
-        
-    def _compute_exercise_modifications(self, current: Dict, target: Dict) -> np.ndarray:
-        """Compute required exercise modifications to reach target"""
-        # Calculate differences in muscle strength and cardio
-        muscle_diffs = {
-            muscle: target['muscleStrength'].get(muscle, 0) - current['muscleStrength'].get(muscle, 0)
-            for muscle in set(current['muscleStrength'].keys()) | set(target['muscleStrength'].keys())
-        }
-        
-        cardio_diff = target.get('cardiovascularEndurance', 0) - current.get('cardiovascularEndurance', 0)
-        
-        # Get unique priority muscles by sorting and removing duplicates
-        priority_muscles = sorted(
-            set(muscle_diffs.items()),  # Convert to set to remove duplicates
-            key=lambda x: abs(x[1]), 
-            reverse=True
-        )[:3]
-        
-        # Pad with zeros if we have fewer than 3 muscles
-        while len(priority_muscles) < 3:
-            priority_muscles.append(('none', 0.0))
-        
-        # Convert muscle names to indices
-        muscle_indices = [self.muscle_mapping[muscle] for muscle, _ in priority_muscles]
-        
-        # Return numerical array
-        return np.array([
-            cardio_diff,
-            *muscle_indices,
-            *[diff for _, diff in priority_muscles]
-        ])
-        
-    def recommend_modifications(self, 
-                              history_data: Dict, 
-                              target_metrics: Dict,
-                              timeframe_days: int) -> Dict:
-        """Generate recommended modifications based on history and targets"""
-        # Extract recent history sequence
-        recent_sequence = history_data['entries'][-7:]  # Last 7 days
-        sequence_features = self._extract_sequence_features(recent_sequence)
-        
-        # Reshape to include batch dimension: (batch_size=1, sequence_length=7, features=11)
-        sequence_features = sequence_features.reshape(1, 7, 11)
+        # Save the scaler
+        with open('feature_scaler.pkl', 'wb') as f:
+            pickle.dump(self.scaler, f)
 
-        # Get model predictions using transformed metrics
-        diet_mods, exercise_mods = self.modification_model.predict(
-            sequence_features
-        )
+    def predict_metrics_for_entry(self, entry: Dict) -> Dict:
+        """Predict metrics for a single historical entry."""
+        features = self._process_entry(entry)
+        features_array = np.array(features)  # Convert list to numpy array
+        features_normalized = self.scaler.transform(features_array.reshape(1, -1))
+        prediction = self.modification_model.predict(features_normalized)[0]
+        return self._format_prediction(prediction, entry['date'], 0)
+
+    def extrapolate_future_metrics(self, last_entry: Dict, last_metrics: Dict, days_ahead: int) -> List[Dict]:
+        predictions = []
+        current_entry = last_entry.copy()
         
-        # Return recommendations in the original format
-        return {
-            'recommendedChanges': {
-                'diet': self._format_diet_recommendations(diet_mods),
-                'exercise': self._format_exercise_recommendations(exercise_mods)
+        # Reset metrics to baseline for future predictions
+        baseline_metrics = {
+            'date': last_entry['date'],
+            'weightChange': 0,  # Reset weight change to 0
+            'cardiovascularEndurance': 100,  # Reset to baseline 100
+            'muscleStrength': {
+                muscle: 100  # Reset all muscles to baseline 100
+                for muscle in last_metrics['muscleStrength'].keys()
             }
         }
-    
-    def _get_feature_dim(self):
-        """
-        Returns the dimension of the input features based on actual extraction.
-        Currently extracting 11 features per day:
-        - totalCaloriesConsumed
-        - totalCaloriesBurned
-        - totalProtein
-        - totalCarbohydrates
-        - totalFat
-        - number of exercises
-        - total exercise minutes
-        - total calories burned from exercises
-        - number of workouts
-        - number of strength workouts
-        - number of cardio workouts
-        """
-        return 11  # Match the actual features being extracted in _extract_sequence_features
+        
+        current_metrics = baseline_metrics.copy()
+        
+        for day in range(days_ahead):
+            # Update date
+            next_date = (datetime.strptime(current_entry['date'], '%Y-%m-%d') + 
+                        timedelta(days=1)).strftime('%Y-%m-%d')
+            current_entry['date'] = next_date
+            
+            # Modify entry based on previous prediction
+            if predictions:
+                last_pred = predictions[-1]
+                # Update calories burned based on cardio improvement
+                cardio_factor = last_pred['cardiovascularEndurance'] / 100.0
+                if 'exercises' in current_entry:
+                    for ex in current_entry['exercises']:
+                        ex['caloriesBurned'] *= cardio_factor
+                    current_entry['totalCaloriesBurned'] = sum(ex['caloriesBurned'] 
+                                                             for ex in current_entry['exercises'])
+            
+            # Make prediction
+            features = self._process_entry(current_entry)
+            features_array = np.array(features)
+            features_normalized = self.scaler.transform(features_array.reshape(1, -1))
+            prediction = self.modification_model.predict(features_normalized)[0]
+            pred_dict = self._format_prediction(prediction, next_date, 0)
+            predictions.append(pred_dict)
+            
+            # Update current metrics for next iteration
+            current_metrics = pred_dict
+        
+        return predictions
 
-    def _get_diet_output_dim(self) -> int:
-        """
-        Returns the dimension of diet modification outputs:
-        - calorie adjustment
-        - protein adjustment
-        - carbs adjustment
-        - fat adjustment
-        """
-        return 4  # Increase from 1 to 4 to match our formatting expectations
+    def _get_or_pad_sequence(self, entry: Dict, sequence_length: int = 30) -> np.ndarray:
+        """Create a sequence from entry history or pad with zeros."""
+        # In real implementation, you'd want to get actual historical data
+        sequence = np.zeros((sequence_length, 26))
+        features = self._process_entry(entry)
+        sequence[-1] = features
+        return sequence
 
-    def _get_exercise_output_dim(self) -> int:
-        """
-        Returns the dimension of exercise modification outputs:
-        - cardiovascular adjustment needed
-        - top 3 muscle names that need work
-        - differences for those 3 muscles
-        """
-        return 7  # 1 cardio + 3 muscle names + 3 differences
+    def _update_entry_with_prediction(self, entry: Dict, prediction: Dict) -> Dict:
+        """Update entry based on predictions for next iteration."""
+        new_entry = entry.copy()
+        new_entry["date"] = prediction["date"]
+        
+        # Maintain the same exercise patterns but adjust effectiveness
+        # based on improved cardiovascular endurance and muscle strength
+        cardio_improvement = prediction["cardiovascularEndurance"] / 100.0
+        
+        # Adjust calories burned based on improved cardiovascular endurance
+        if "exercises" in new_entry:
+            for exercise in new_entry["exercises"]:
+                exercise["caloriesBurned"] = int(exercise["caloriesBurned"] * cardio_improvement)
+            new_entry["totalCaloriesBurned"] = sum(ex["caloriesBurned"] for ex in new_entry["exercises"])
+        
+        return new_entry
 
-    def _extract_metrics(self, day_data: Dict) -> Dict:
-        """Extract relevant metrics from a single day's data"""
-        metrics = {
-            'totalCaloriesConsumed': day_data['totalCaloriesConsumed'],
-            'totalCaloriesBurned': day_data['totalCaloriesBurned'],
-            'totalProtein': day_data['totalProtein'],
-            'totalCarbohydrates': day_data['totalCarbohydrates'],
-            'totalFat': day_data['totalFat'],
-            'exercises': day_data.get('exercises', []),
-            'workouts': day_data.get('workouts', [])
-        }
+    def load_trained_model(self, model_path: str, scaler_path: str):
+        """Load the trained model and scaler."""
+        # Update path if using .h5 extension
+        if model_path.endswith('.h5'):
+            model_path = model_path.replace('.h5', '.keras')
         
-        # Initialize default muscle strength values if not present
-        metrics['muscleStrength'] = {
-            "abdominals": 0, "abductors": 0, "adductors": 0, "biceps": 0,
-            "calves": 0, "chest": 0, "forearms": 0, "glutes": 0,
-            "hamstrings": 0, "lats": 0, "lowerBack": 0, "middleBack": 0,
-            "neck": 0, "quadriceps": 0, "shoulders": 0, "traps": 0, "triceps": 0
-        }
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model file not found: {model_path}. Please train the model first.")
+        if not os.path.exists(scaler_path):
+            raise FileNotFoundError(f"Scaler file not found: {scaler_path}. Please train the model first.")
         
-        # Update with actual values if present
-        if 'muscleStrength' in day_data:
-            metrics['muscleStrength'].update(day_data['muscleStrength'])
-        
-        # Set default cardiovascular endurance if not present
-        metrics['cardiovascularEndurance'] = day_data.get('cardiovascularEndurance', 0)
-        
-        return metrics
+        self.modification_model.load_weights(model_path)
+        with open(scaler_path, 'rb') as f:
+            self.scaler = pickle.load(f)
 
-    def _format_diet_recommendations(self, diet_mods) -> Dict:
-        """Format diet modifications into readable recommendations"""
-        # Extract the first prediction since we only have one sample
-        mods = diet_mods[0]
+    def trend_accuracy(self, y_true, y_pred):
+        """Custom metric to measure if the model correctly predicts improvement trends."""
+        trend_true = y_true[1:] - y_true[:-1]
+        trend_pred = y_pred[1:] - y_pred[:-1]
+        return tf.reduce_mean(tf.cast(tf.sign(trend_true) == tf.sign(trend_pred), tf.float32))
+
+    def _format_prediction(self, prediction: np.ndarray, base_date: str, days_ahead: int) -> Dict:
+        """Format the model's prediction into a structured dictionary."""
+        # Calculate the future date
+        future_date = (datetime.strptime(base_date, "%Y-%m-%d") + timedelta(days=days_ahead)).strftime("%Y-%m-%d")
         
-        # Debug print to see what we're getting
-        print(f"Diet mods shape: {diet_mods.shape}")
-        print(f"Diet mods values: {diet_mods}")
+        # Define muscle groups in the same order as the model output
+        muscle_groups = ['abdominals', 'abductors', 'adductors', 'biceps', 'calves', 
+                        'chest', 'forearms', 'glutes', 'hamstrings', 'lats', 
+                        'lowerback', 'middleback', 'neck', 'quadriceps', 'shoulders', 
+                        'traps', 'triceps']
         
-        # For now, return only calorie adjustment until we fix the dimensions
         return {
-            'calorie_adjustment': float(mods[0]),
-            # Add other adjustments only if they exist
-            **({'protein_adjustment': float(mods[1])} if len(mods) > 1 else {}),
-            **({'carbs_adjustment': float(mods[2])} if len(mods) > 2 else {}),
-            **({'fat_adjustment': float(mods[3])} if len(mods) > 3 else {})
+            "date": future_date,
+            "weightChange": float(prediction[0]),
+            "cardiovascularEndurance": float(prediction[1]),
+            "muscleStrength": {
+                muscle: float(val) 
+                for muscle, val in zip(muscle_groups, prediction[2:])
+            }
         }
-
-    def _format_exercise_recommendations(self, exercise_mods) -> Dict:
-        """Format exercise modifications into readable recommendations"""
-        mods = exercise_mods[0]  # Get first prediction
-        
-        cardio_adjustment = float(mods[0])
-        muscle_indices = mods[1:4].astype(int)  # Convert to integers for mapping
-        muscle_diffs = mods[4:7]  # Last 3 values are the differences
-        
-        # Convert indices back to muscle names
-        muscle_names = [self.reverse_muscle_mapping[idx] for idx in muscle_indices]
-        
-        recommendations = {
-            'cardiovascular': {
-                'adjustment_needed': cardio_adjustment,
-                'recommendation': 'Increase cardio intensity' if cardio_adjustment > 0 else 'Maintain current cardio routine'
-            },
-            'muscle_focus': []
-        }
-        
-        # Add specific muscle recommendations
-        for muscle, diff in zip(muscle_names, muscle_diffs):
-            if muscle != 'none' and diff > 0:
-                recommendations['muscle_focus'].append({
-                    'muscle': muscle,
-                    'adjustment': float(diff),
-                    'recommendation': f'Add more {muscle} focused exercises'
-                })
-        
-        return recommendations
