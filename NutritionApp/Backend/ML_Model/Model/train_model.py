@@ -1,5 +1,5 @@
-from habit_modification_model import HabitModificationModel
 import os
+from habit_modification_model import HabitModificationModel
 
 # Initialize model
 model = HabitModificationModel()

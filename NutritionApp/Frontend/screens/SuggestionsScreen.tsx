@@ -5,14 +5,9 @@ import { API_URL } from '@env';
 import { Picker } from '@react-native-picker/picker';
 
 interface Recommendation {
-  last_predicted: any; // Define these types according to your data structure
-  final_predicted: any;
-  differences: any;
-  projection_messages: {
-    weightChange: string;
-    cardiovascularEndurance: string;
-    muscleStrength: { [key: string]: string };
-  };
+  weightChange: number;
+  cardiovascularEndurance: number;
+  muscleStrength: { [key: string]: number };
 }
 
 interface MuscleTarget {
@@ -40,20 +35,20 @@ const SuggestionsScreen = () => {
   const handleSubmit = async () => {
     try {
       setLoading(true);
-      
+  
       if (!timeframe || !weightChange || !cardioImprovement) {
         Alert.alert('Error', 'Please fill in all fields');
         setLoading(false);
         return;
       }
-
+  
       const cardioTarget = 100 + Number(cardioImprovement);
       const weightChangeNum = Number(weightChange);
-
+  
       const targetDate = new Date(Date.now() + Number(timeframe) * 24 * 60 * 60 * 1000)
         .toISOString()
         .split('T')[0];
-
+  
       const muscleStrength = Object.fromEntries(
         MUSCLE_OPTIONS.map(muscle => {
           const target = muscleTargets.find(t => t.muscle === muscle);
@@ -63,14 +58,14 @@ const SuggestionsScreen = () => {
           ];
         })
       );
-
+  
       const target_metrics = {
         date: targetDate,
         weightChange: weightChangeNum,
         cardiovascularEndurance: cardioTarget,
         muscleStrength
       };
-
+  
       const response = await fetch(`${API_URL}/api/suggestions`, {
         method: 'POST',
         headers: {
@@ -81,56 +76,59 @@ const SuggestionsScreen = () => {
           target_metrics: target_metrics,
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error('Failed to get recommendations');
       }
-
+  
       const data = await response.json();
-      setRecommendations(data);
+      setRecommendations(data); // Store returned metrics in state
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Failed to get recommendations');
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   const renderRecommendations = () => {
     if (!recommendations) return null;
-
-    const { projection_messages } = recommendations;
-
+  
+    const { weightChange, cardiovascularEndurance, muscleStrength } = recommendations;
+  
     return (
       <View style={styles.recommendationsContainer}>
-        <Text style={styles.sectionTitle}>Projected Changes</Text>
-
+        <Text style={styles.sectionTitle}>Predicted Changes</Text>
+  
         <View style={styles.projectionCard}>
           <Text style={styles.projectionTitle}>Weight Change</Text>
           <Text style={styles.projectionText}>
-            {projection_messages.weightChange}
+            {weightChange.toFixed(2)} lbs
           </Text>
         </View>
-
+  
         <View style={styles.projectionCard}>
           <Text style={styles.projectionTitle}>Cardiovascular Endurance</Text>
           <Text style={styles.projectionText}>
-            {projection_messages.cardiovascularEndurance}
+            {cardiovascularEndurance.toFixed(2)}%
           </Text>
         </View>
-
-        <Text style={styles.sectionTitle}>Muscle Strength</Text>
-        {Object.entries(projection_messages.muscleStrength).map(([muscle, message]) => (
+  
+        <Text style={styles.sectionTitle}>Muscle Strength Changes</Text>
+        {Object.entries(muscleStrength).map(([muscle, change]) => (
           <View key={muscle} style={styles.projectionCard}>
             <Text style={styles.projectionTitle}>
               {muscle.charAt(0).toUpperCase() + muscle.slice(1)}
             </Text>
-            <Text style={styles.projectionText}>{message}</Text>
+            <Text style={styles.projectionText}>
+              {change.toFixed(2)}%
+            </Text>
           </View>
         ))}
       </View>
     );
   };
+  
 
   const renderMuscleInputs = () => {
     return (

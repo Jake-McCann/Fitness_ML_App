@@ -3,8 +3,9 @@ from flask_cors import CORS
 import json
 import os
 from datetime import datetime
-from ML_Model.Model.predict import load_and_predict
 import traceback
+
+from ML_Model.Model.habit_modification_model import HabitModificationModel
 
 app = Flask(__name__)
 CORS(app)
@@ -117,29 +118,44 @@ def get_suggestions():
         timeframe_days = data.get('timeframe_days')
         target_metrics = data.get('target_metrics')
         
-        if not timeframe_days or not target_metrics:
-            return jsonify({'error': 'Missing required parameters'}), 400
+        if not timeframe_days:
+            return jsonify({'error': 'Missing timeframe_days parameter'}), 400
         
-        print("\n=== User's Target Metrics ===")
-        print(json.dumps(target_metrics, indent=2))
-            
-        predictions = load_and_predict(timeframe_days, target_metrics)
+        # Load history data
+        input_data = load_history()
+
+        # Initialize the model
+        model = HabitModificationModel()
+        model_path = os.path.join(current_dir, 'trained_habit_model.keras')
+        scaler_path = os.path.join(current_dir, 'feature_scaler.pkl')
         
-        print("\n=== Model's Final Prediction ===")
-        print(json.dumps(predictions['final_predicted'], indent=2))
-        
-        print("\n=== Difference Between Last Entry and Final Prediction ===")
-        print(json.dumps(predictions['differences'], indent=2))
-        
-        return jsonify(predictions)
-        
+        model.load_trained_model(model_path, scaler_path)
+
+        # Get predictions from the model
+        total_changes = model.extrapolate_future_metrics(input_data, int(timeframe_days))
+
+        # Format the response to send to the frontend
+        response_data = {
+            "weightChange": total_changes[0],
+            "cardiovascularEndurance": total_changes[1],
+            "muscleStrength": {
+                muscle: total_changes[i + 2]
+                for i, muscle in enumerate([
+                    'abdominals', 'abductors', 'adductors', 'biceps', 'calves',
+                    'chest', 'forearms', 'glutes', 'hamstrings', 'lats',
+                    'lowerback', 'middleback', 'neck', 'quadriceps', 'shoulders',
+                    'traps', 'triceps'
+                ])
+            }
+        }
+
+        return jsonify(response_data)
+
     except Exception as e:
-        print(f"Error in /api/suggestions:")
-        print(f"Type: {type(e).__name__}")
-        print(f"Message: {str(e)}")
-        print("Traceback:")
+        print(f"Error in /api/suggestions: {e}")
         print(traceback.format_exc())
         return jsonify({'error': str(e)}), 500
+
 
 @app.route('/api/nutrition/search', methods=['GET'])
 def search_nutrition():
