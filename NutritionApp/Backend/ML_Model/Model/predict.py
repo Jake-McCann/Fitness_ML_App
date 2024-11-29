@@ -57,21 +57,71 @@ def load_and_predict(timeframe_days: int, target_metrics: Dict) -> Dict:
         fixed_muscle_strength[fixed_muscle] = value
     final_prediction['muscleStrength'] = fixed_muscle_strength
     
-    # Calculate percentage differences
+    # Fix muscle names in latest predicted metrics
+    fixed_latest_muscle_strength = {}
+    for muscle, value in latest_predicted_metrics['muscleStrength'].items():
+        fixed_muscle = muscle_name_map.get(muscle, muscle)
+        fixed_latest_muscle_strength[fixed_muscle] = value
+    latest_predicted_metrics['muscleStrength'] = fixed_latest_muscle_strength
+    
+    # Calculate differences between last entry date and final prediction date
     differences = {
-        'weightChange': ((final_prediction['weightChange'] - target_metrics['weightChange']) / abs(target_metrics['weightChange'])) * 100 if target_metrics['weightChange'] != 0 else 0,
-        'cardiovascularEndurance': ((final_prediction['cardiovascularEndurance'] - target_metrics['cardiovascularEndurance']) / target_metrics['cardiovascularEndurance']) * 100,
+        'weightChange': final_prediction['weightChange'] - latest_predicted_metrics['weightChange'],
+        'cardiovascularEndurance': final_prediction['cardiovascularEndurance'] - latest_predicted_metrics['cardiovascularEndurance'],
         'muscleStrength': {
-            muscle: ((final_prediction['muscleStrength'][muscle] - target_metrics['muscleStrength'][muscle]) / target_metrics['muscleStrength'][muscle]) * 100
-            for muscle in target_metrics['muscleStrength'].keys()
+            muscle: final_prediction['muscleStrength'][muscle] - latest_predicted_metrics['muscleStrength'][muscle]
+            for muscle in final_prediction['muscleStrength'].keys()
         }
     }
     
+    # Define a helper function to generate the projection messages
+    def generate_projection_message(difference, metric_name):
+        if metric_name == 'weightChange':
+            unit = 'lbs'
+        else:
+            unit = '%'
+        if difference > 0:
+            return f"Projected to increase by {difference:.2f} {unit}"
+        elif difference < 0:
+            return f"Projected to decrease by {abs(difference):.2f} {unit}"
+        else:
+            return "No projected change"
+    
+    # Generate projection messages
+    projection_messages = {}
+    
+    # For weightChange
+    projection_messages['weightChange'] = generate_projection_message(differences['weightChange'], 'weightChange')
+    
+    # For cardiovascularEndurance
+    projection_messages['cardiovascularEndurance'] = generate_projection_message(differences['cardiovascularEndurance'], 'cardiovascularEndurance')
+    
+    # For muscleStrength
+    projection_messages['muscleStrength'] = {}
+    for muscle, diff_value in differences['muscleStrength'].items():
+        projection_messages['muscleStrength'][muscle] = generate_projection_message(diff_value, 'muscleStrength')
+    
+    # Print to console
+    print("\nPredicted metrics for the last entry date:")
+    print(json.dumps(latest_predicted_metrics, indent=2))
+    
+    print("\nPredicted metrics for the final timeframe date:")
+    print(json.dumps(final_prediction, indent=2))
+    
+    print("\nDifference between the two for each metric:")
+    print(json.dumps(differences, indent=2))
+    
+    print("\nProjection messages:")
+    print(json.dumps(projection_messages, indent=2))
+    
     return {
-        'predicted': final_prediction,
-        'target': target_metrics,
-        'differences': differences
+        'last_predicted': latest_predicted_metrics,
+        'final_predicted': final_prediction,
+        'differences': differences,
+        'projection_messages': projection_messages
     }
+
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Predict health metrics')

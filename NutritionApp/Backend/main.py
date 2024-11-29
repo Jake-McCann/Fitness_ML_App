@@ -126,9 +126,9 @@ def get_suggestions():
         predictions = load_and_predict(timeframe_days, target_metrics)
         
         print("\n=== Model's Final Prediction ===")
-        print(json.dumps(predictions['predicted'], indent=2))
+        print(json.dumps(predictions['final_predicted'], indent=2))
         
-        print("\n=== Percentage Differences ===")
+        print("\n=== Difference Between Last Entry and Final Prediction ===")
         print(json.dumps(predictions['differences'], indent=2))
         
         return jsonify(predictions)

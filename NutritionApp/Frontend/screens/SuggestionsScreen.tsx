@@ -1,33 +1,17 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert, FlatList, Modal } from 'react-native';
+import { View, Text, StyleSheet, TextInput, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import { COLORS } from '../constants/colors';
 import { API_URL } from '@env';
 import { Picker } from '@react-native-picker/picker';
 
 interface Recommendation {
-  recommendedChanges: {
-    diet: {
-      calorie_adjustment: number;
-      protein_adjustment: number;
-      carbs_adjustment: number;
-      fat_adjustment: number;
-    };
-    exercise: {
-      cardiovascular: {
-        adjustment_needed: number;
-        recommendation: string;
-      };
-      muscle_focus: Array<{
-        muscle: string;
-        adjustment: number;
-        recommendation: string;
-      }>;
-    };
-  };
-  differences: {
-    weightChange: number;
-    cardiovascularEndurance: number;
-    muscleStrength: { [key: string]: number };
+  last_predicted: any; // Define these types according to your data structure
+  final_predicted: any;
+  differences: any;
+  projection_messages: {
+    weightChange: string;
+    cardiovascularEndurance: string;
+    muscleStrength: { [key: string]: string };
   };
 }
 
@@ -45,7 +29,6 @@ const SuggestionsScreen = () => {
   const [currentImprovement, setCurrentImprovement] = useState('');
   const [recommendations, setRecommendations] = useState<Recommendation | null>(null);
   const [loading, setLoading] = useState(false);
-  const [showMuscleList, setShowMuscleList] = useState(false);
 
   const MUSCLE_OPTIONS = [
     'abdominals', 'abductors', 'adductors', 'biceps', 'calves', 
@@ -58,22 +41,19 @@ const SuggestionsScreen = () => {
     try {
       setLoading(true);
       
-      // Validate inputs
       if (!timeframe || !weightChange || !cardioImprovement) {
         Alert.alert('Error', 'Please fill in all fields');
+        setLoading(false);
         return;
       }
 
-      // Calculate target metrics
       const cardioTarget = 100 + Number(cardioImprovement);
       const weightChangeNum = Number(weightChange);
-      
-      // Get target date based on timeframe
+
       const targetDate = new Date(Date.now() + Number(timeframe) * 24 * 60 * 60 * 1000)
         .toISOString()
         .split('T')[0];
 
-      // Convert muscle targets to numbers, defaulting to 100 if empty
       const muscleStrength = Object.fromEntries(
         MUSCLE_OPTIONS.map(muscle => {
           const target = muscleTargets.find(t => t.muscle === muscle);
@@ -91,7 +71,6 @@ const SuggestionsScreen = () => {
         muscleStrength
       };
 
-      // Make API call to get suggestions
       const response = await fetch(`${API_URL}/api/suggestions`, {
         method: 'POST',
         headers: {
@@ -108,8 +87,6 @@ const SuggestionsScreen = () => {
       }
 
       const data = await response.json();
-      
-      // data now includes predicted, target, and differences
       setRecommendations(data);
     } catch (error) {
       console.error('Error:', error);
@@ -122,33 +99,33 @@ const SuggestionsScreen = () => {
   const renderRecommendations = () => {
     if (!recommendations) return null;
 
-    const { differences } = recommendations;
-
-    const formatDifference = (diff: number) => {
-      const sign = diff > 0 ? '+' : '';
-      return `${sign}${diff.toFixed(1)}%`;
-    };
+    const { projection_messages } = recommendations;
 
     return (
       <View style={styles.recommendationsContainer}>
-        <Text style={styles.sectionTitle}>Goal Progress Predictions:</Text>
-        
-        <Text style={styles.subTitle}>Weight Change:</Text>
-        <Text style={styles.difference}>
-          {formatDifference(differences.weightChange)} from target
-        </Text>
+        <Text style={styles.sectionTitle}>Projected Changes</Text>
 
-        <Text style={styles.subTitle}>Cardiovascular Endurance:</Text>
-        <Text style={styles.difference}>
-          {formatDifference(differences.cardiovascularEndurance)} from target
-        </Text>
+        <View style={styles.projectionCard}>
+          <Text style={styles.projectionTitle}>Weight Change</Text>
+          <Text style={styles.projectionText}>
+            {projection_messages.weightChange}
+          </Text>
+        </View>
 
-        <Text style={styles.subTitle}>Muscle Strength:</Text>
-        {Object.entries(differences.muscleStrength).map(([muscle, diff]) => (
-          <View key={muscle} style={styles.muscleItem}>
-            <Text>
-              • {muscle.charAt(0).toUpperCase() + muscle.slice(1)}: {formatDifference(diff)} from target
+        <View style={styles.projectionCard}>
+          <Text style={styles.projectionTitle}>Cardiovascular Endurance</Text>
+          <Text style={styles.projectionText}>
+            {projection_messages.cardiovascularEndurance}
+          </Text>
+        </View>
+
+        <Text style={styles.sectionTitle}>Muscle Strength</Text>
+        {Object.entries(projection_messages.muscleStrength).map(([muscle, message]) => (
+          <View key={muscle} style={styles.projectionCard}>
+            <Text style={styles.projectionTitle}>
+              {muscle.charAt(0).toUpperCase() + muscle.slice(1)}
             </Text>
+            <Text style={styles.projectionText}>{message}</Text>
           </View>
         ))}
       </View>
@@ -198,13 +175,15 @@ const SuggestionsScreen = () => {
 
         {muscleTargets.map((target, index) => (
           <View key={index} style={styles.muscleTargetRow}>
-            <Text>{target.muscle}: {target.improvement}%</Text>
+            <Text style={styles.muscleTargetText}>
+              {target.muscle.charAt(0).toUpperCase() + target.muscle.slice(1)}: {target.improvement}%
+            </Text>
             <TouchableOpacity onPress={() => {
               const newTargets = [...muscleTargets];
               newTargets.splice(index, 1);
               setMuscleTargets(newTargets);
             }}>
-              <Text>×</Text>
+              <Text style={styles.removeButton}>×</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -230,7 +209,7 @@ const SuggestionsScreen = () => {
             <TouchableOpacity 
               style={[
                 styles.signButton, 
-                weightChange.startsWith('-') ? styles.signButtonInactive : styles.signButtonActive
+                !weightChange.startsWith('-') ? styles.signButtonActive : styles.signButtonInactive
               ]}
               onPress={() => setWeightChange(prev => prev.replace('-', ''))}
             >
@@ -241,14 +220,14 @@ const SuggestionsScreen = () => {
                 styles.signButton, 
                 weightChange.startsWith('-') ? styles.signButtonActive : styles.signButtonInactive
               ]}
-              onPress={() => setWeightChange(prev => prev.startsWith('-') ? prev.replace('-', '') : `-${prev}`)}
+              onPress={() => setWeightChange(prev => prev.startsWith('-') ? prev : `-${prev}`)}
             >
               <Text style={styles.signButtonText}>-</Text>
             </TouchableOpacity>
           </View>
           <TextInput
             style={[styles.input, styles.weightInput]}
-            value={weightChange.replace('-', '')}
+            value={weightChange.startsWith('-') ? weightChange.substring(1) : weightChange}
             onChangeText={(text) => setWeightChange(prev => prev.startsWith('-') ? `-${text}` : text)}
             keyboardType="numeric"
             placeholder="Enter target weight change"
@@ -264,7 +243,7 @@ const SuggestionsScreen = () => {
           placeholder="Enter target improvement"
         />
 
-        <Text style={styles.sectionTitle}>Muscle Group Improvements:</Text>
+        <Text style={styles.sectionTitle}>Muscle Group Improvements</Text>
         {renderMuscleInputs()}
 
         <TouchableOpacity 
@@ -303,12 +282,14 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     padding: 10,
     marginBottom: 15,
+    color: COLORS.darkPurple,
   },
   button: {
     backgroundColor: COLORS.darkPurple,
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
     color: COLORS.white,
@@ -317,70 +298,30 @@ const styles = StyleSheet.create({
   },
   recommendationsContainer: {
     marginTop: 20,
-    padding: 15,
-    backgroundColor: COLORS.white,
-    borderRadius: 10,
-    shadowColor: COLORS.darkPurple,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
   },
   sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: COLORS.darkPurple,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+  projectionCard: {
+    backgroundColor: COLORS.lightPurple,
+    borderRadius: 10,
+    padding: 15,
+    marginBottom: 15,
+  },
+  projectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: COLORS.darkPurple,
-    marginBottom: 15,
+    color: COLORS.white,
+    marginBottom: 10,
   },
-  subTitle: {
+  projectionText: {
     fontSize: 16,
-    fontWeight: 'bold',
-    marginTop: 10,
-    marginBottom: 5,
-    color: COLORS.darkPurple,
-  },
-  muscleItem: {
-    marginLeft: 10,
-    marginBottom: 5,
-  },
-  inputColumn: {
-    marginBottom: 15,
-    gap: 10,
-  },
-  muscleInput: {
-    borderWidth: 1,
-    borderColor: COLORS.lightPurple,
-    borderRadius: 5,
-    padding: 10,
-  },
-  improvementInput: {
-    borderWidth: 1,
-    borderColor: COLORS.lightPurple,
-    borderRadius: 5,
-    padding: 10,
-  },
-  addButton: {
-    backgroundColor: COLORS.darkPurple,
-    padding: 15,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  muscleListContainer: {
-    backgroundColor: COLORS.white,
-    borderRadius: 5,
-    maxHeight: '50%',
-    overflow: 'hidden',
-  },
-  muscleList: {
-    flex: 1,
-  },
-  muscleOption: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: COLORS.lightPurple,
-  },
-  muscleOptionText: {
-    color: COLORS.darkPurple,
+    color: COLORS.white,
+    lineHeight: 22,
   },
   muscleTargetRow: {
     flexDirection: 'row',
@@ -393,28 +334,46 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   muscleTargetText: {
-    color: COLORS.darkPurple,
+    color: COLORS.white,
+    fontSize: 16,
   },
   removeButton: {
-    color: COLORS.red,
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  addButtonText: {
     color: COLORS.white,
     fontSize: 20,
     fontWeight: 'bold',
   },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  difference: {
-    fontSize: 16,
+  muscleItem: {
+    marginLeft: 10,
     marginBottom: 5,
+  },
+  muscleText: {
+    fontSize: 16,
+    color: COLORS.white,
+    lineHeight: 22,
+  },
+  inputColumn: {
+    marginBottom: 15,
+    gap: 10,
+  },
+  muscleInput: {
+    borderWidth: 1,
+    borderColor: COLORS.lightPurple,
+    borderRadius: 5,
+    padding: 10,
     color: COLORS.darkPurple,
+  },
+  improvementInput: {
+    borderWidth: 1,
+    borderColor: COLORS.lightPurple,
+    borderRadius: 5,
+    padding: 10,
+    color: COLORS.darkPurple,
+  },
+  addButton: {
+    backgroundColor: COLORS.darkPurple,
+    padding: 10,
+    borderRadius: 5,
+    alignItems: 'center',
   },
   weightInputContainer: {
     marginBottom: 15,
@@ -444,7 +403,8 @@ const styles = StyleSheet.create({
   },
   weightInput: {
     marginBottom: 0,
+    color: COLORS.darkPurple,
   },
 });
 
-export default SuggestionsScreen; 
+export default SuggestionsScreen;

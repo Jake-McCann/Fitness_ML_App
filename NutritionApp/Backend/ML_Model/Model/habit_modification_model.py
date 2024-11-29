@@ -159,19 +159,7 @@ class HabitModificationModel:
     def extrapolate_future_metrics(self, last_entry: Dict, last_metrics: Dict, days_ahead: int) -> List[Dict]:
         predictions = []
         current_entry = last_entry.copy()
-        
-        # Reset metrics to baseline for future predictions
-        baseline_metrics = {
-            'date': last_entry['date'],
-            'weightChange': 0,  # Reset weight change to 0
-            'cardiovascularEndurance': 100,  # Reset to baseline 100
-            'muscleStrength': {
-                muscle: 100  # Reset all muscles to baseline 100
-                for muscle in last_metrics['muscleStrength'].keys()
-            }
-        }
-        
-        current_metrics = baseline_metrics.copy()
+        current_metrics = last_metrics.copy()
         
         for day in range(days_ahead):
             # Update date
@@ -182,13 +170,9 @@ class HabitModificationModel:
             # Modify entry based on previous prediction
             if predictions:
                 last_pred = predictions[-1]
-                # Update calories burned based on cardio improvement
-                cardio_factor = last_pred['cardiovascularEndurance'] / 100.0
-                if 'exercises' in current_entry:
-                    for ex in current_entry['exercises']:
-                        ex['caloriesBurned'] *= cardio_factor
-                    current_entry['totalCaloriesBurned'] = sum(ex['caloriesBurned'] 
-                                                             for ex in current_entry['exercises'])
+                current_entry = self._update_entry_with_prediction(current_entry, last_pred)
+            else:
+                current_entry = self._update_entry_with_prediction(current_entry, current_metrics)
             
             # Make prediction
             features = self._process_entry(current_entry)
@@ -202,6 +186,7 @@ class HabitModificationModel:
             current_metrics = pred_dict
         
         return predictions
+
 
     def _get_or_pad_sequence(self, entry: Dict, sequence_length: int = 30) -> np.ndarray:
         """Create a sequence from entry history or pad with zeros."""
@@ -226,7 +211,13 @@ class HabitModificationModel:
                 exercise["caloriesBurned"] = int(exercise["caloriesBurned"] * cardio_improvement)
             new_entry["totalCaloriesBurned"] = sum(ex["caloriesBurned"] for ex in new_entry["exercises"])
         
+        # Potentially adjust other features based on predicted metrics
+        # For example, adjust totalCaloriesConsumed based on weightChange
+        weight_change_factor = 1 + (prediction["weightChange"] / 100.0)
+        new_entry["totalCaloriesConsumed"] = int(new_entry.get("totalCaloriesConsumed", 2000) * weight_change_factor)
+        
         return new_entry
+
 
     def load_trained_model(self, model_path: str, scaler_path: str):
         """Load the trained model and scaler."""
