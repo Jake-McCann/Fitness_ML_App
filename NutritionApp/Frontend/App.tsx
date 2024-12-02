@@ -32,7 +32,7 @@ export default function App() {
           name="History" 
           component={HistoryScreen}
           options={{
-            tabBarIcon: ({ color }) => (
+            tabBarIcon: ({ color }: { color: string }) => (
               <Ionicons name="calendar" size={24} color={color} />
             ),
           }}
@@ -41,7 +41,7 @@ export default function App() {
           name="Create" 
           component={CreateScreen}
           options={{
-            tabBarIcon: ({ color }) => (
+            tabBarIcon: ({ color }: { color: string }) => (
               <Ionicons name="add-circle" size={32} color={color} />
             ),
           }}
@@ -50,7 +50,7 @@ export default function App() {
           name="Suggestions" 
           component={SuggestionsScreen}
           options={{
-            tabBarIcon: ({ color }) => (
+            tabBarIcon: ({ color }: { color: string }) => (
               <Ionicons name="bulb" size={24} color={color} />
             ),
           }}

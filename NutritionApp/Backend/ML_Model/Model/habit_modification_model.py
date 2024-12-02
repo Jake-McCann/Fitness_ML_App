@@ -41,7 +41,7 @@ class HabitModificationModel:
         return model
 
     def _process_entry(self, entry: Dict) -> List[float]:
-        # Extract features
+        #extract features
         features = [
             entry.get('totalCaloriesConsumed', 0),
             entry.get('totalFat', 0),
@@ -49,12 +49,12 @@ class HabitModificationModel:
             entry.get('totalCarbohydrates', 0),
             entry.get('totalSugars', 0),
             entry.get('totalSaturatedFats', 0),
-            len(entry.get('exercises', [])),  # numExercises
-            sum(ex.get('minutes', 0) for ex in entry.get('exercises', [])),  # exerciseMinutes
+            len(entry.get('exercises', [])),  #numExercises
+            sum(ex.get('minutes', 0) for ex in entry.get('exercises', [])),  #exerciseMinutes
             entry.get('totalCaloriesBurned', 0)
         ]
 
-        # Add boolean flags for worked muscle groups
+        #add booleans for worked muscle groups
         worked_muscles = {workout['bodyPart'].lower() for workout in entry.get('workouts', [])}
         muscle_groups = ['abdominals', 'abductors', 'adductors', 'biceps', 'calves',
                          'chest', 'forearms', 'glutes', 'hamstrings', 'lats',
@@ -71,7 +71,7 @@ class HabitModificationModel:
             metrics.get('cardiovascularEndurance', 100)
         ]
 
-        # Add muscle strength values
+        #add muscle strength values
         muscle_strength = metrics.get('muscleStrength', {})
         muscle_groups = ['abdominals', 'abductors', 'adductors', 'biceps', 'calves',
                          'chest', 'forearms', 'glutes', 'hamstrings', 'lats',
@@ -97,11 +97,11 @@ class HabitModificationModel:
             with open(output_file, 'r') as f:
                 output_data = json.load(f)
 
-            # Match each input entry with its corresponding output metrics (shifted by +1 day)
+            #match each input entry with its corresponding output metrics (shifted by +1 day)
             entries = input_data['entries']
             metrics = output_data['healthMetrics']
 
-            # Map features from day n to differences in targets between day n+1 and day n
+            #map features from day n to differences in targets between day n+1 and day n
             for i in range(len(entries) - 1):
                 entry = entries[i]
                 metric_prev = metrics[i]
@@ -111,20 +111,20 @@ class HabitModificationModel:
                 targets_prev = self._process_target(metric_prev)
                 targets_next = self._process_target(metric_next)
 
-                # Compute the difference between targets on day n+1 and day n
+                #compute the difference between targets on day n+1 and day n
                 target_diff = [next_val - prev_val for prev_val, next_val in zip(targets_prev, targets_next)]
 
                 all_features.append(features)
                 all_targets.append(target_diff)
 
-        # Convert to numpy arrays
+        #convert to numpy arrays
         X = np.array(all_features)
         y = np.array(all_targets)
 
-        # Normalize features
+        #normalize features
         X_normalized = self.scaler.fit_transform(X)
 
-        # Train the model
+        #train the model
         early_stopping = tf.keras.callbacks.EarlyStopping(
             monitor='val_loss',
             patience=20,
@@ -139,7 +139,7 @@ class HabitModificationModel:
             callbacks=[early_stopping]
         )
 
-        # Save the scaler
+        #save the scaler
         with open('feature_scaler.pkl', 'wb') as f:
             pickle.dump(self.scaler, f)
 
@@ -149,7 +149,7 @@ class HabitModificationModel:
         features_array = np.array(features)
         features_normalized = self.scaler.transform(features_array.reshape(1, -1))
         prediction = self.modification_model.predict(features_normalized)[0]
-        return prediction  # Return the predicted differences as a numpy array
+        return prediction  #return the predicted differences as a numpy array
 
     def extrapolate_future_metrics(self, input_data: Dict, days_ahead: int) -> np.ndarray:
         historical_entries = input_data['entries']
@@ -167,33 +167,33 @@ class HabitModificationModel:
             total_changes += predicted_diff
             current_entry = future_entry
 
-        # Return the accumulated changes
+        #return the accumulated changes
         return total_changes
 
 
 
     def _generate_future_entry(self, historical_entries: List[Dict]) -> Dict:
         """Generate a future entry consistent with existing data."""
-        # List of numerical keys to average
+        #list of numerical keys to average
         numerical_keys = ['totalCaloriesConsumed', 'totalFat', 'totalProtein', 'totalCarbohydrates',
                           'totalSugars', 'totalSaturatedFats', 'totalCaloriesBurned']
 
-        # Initialize the future entry
+        #initialize the future entry
         future_entry = {}
 
-        # Compute the mean of numerical features
+        #compute the mean of numerical features
         means = {}
         for key in numerical_keys:
             values = [entry.get(key, 0) for entry in historical_entries]
             means[key] = np.mean(values)
 
-        # Add some random variation
+        #add some random variation
         for key in numerical_keys:
-            # Let's add Gaussian noise with 5% standard deviation
+            #add noise with 5% standard deviation
             std_dev = 0.05 * means[key]
             future_entry[key] = max(0, np.random.normal(means[key], std_dev))
 
-        # For 'exercises' and 'workouts', we can copy from the last entry
+        #for exercises and workouts, copy from the last entry
         last_entry = historical_entries[-1]
         future_entry['exercises'] = last_entry.get('exercises', [])
         future_entry['workouts'] = last_entry.get('workouts', [])

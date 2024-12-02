@@ -10,12 +10,12 @@ from ML_Model.Model.habit_modification_model import HabitModificationModel
 app = Flask(__name__)
 CORS(app)
 
-# Get paths to data files
+#get paths to data files
 current_dir = os.path.dirname(os.path.abspath(__file__))
 exercise_path = os.path.join(current_dir, 'Datasets', 'exercise_calories.json')
 history_path = os.path.join(current_dir, 'Datasets', 'history.json')
 
-# Load exercise data
+#load exercise data
 with open(exercise_path, 'r') as f:
     exercise_data = json.load(f)
 
@@ -72,7 +72,7 @@ def add_history_entry():
     else:
         history_data['entries'].append(data)
     
-    # Sort entries by date (newest first)
+    #sort entries by date 
     history_data['entries'].sort(key=lambda x: x['date'], reverse=True)
     
     save_history(history_data)
@@ -94,7 +94,7 @@ def calculate_calories():
     exercises = data.get('exercises', [])
     weight_category = data.get('weightCategory', 155)
     
-    # Convert weight category to the corresponding key in the JSON
+    #convert weight category to the corresponding key in the JSON
     calories_key = f'calories_{weight_category}lbs'
     
     total_calories = 0
@@ -104,7 +104,7 @@ def calculate_calories():
         minutes = exercise['minutes']
         
         if exercise_name in exercise_data:
-            # Convert hour-based calories to minutes and calculate
+            #convert hour-based calories to minutes and calculate
             calories_per_hour = exercise_data[exercise_name][calories_key]
             calories = (calories_per_hour / 60) * minutes
             total_calories += calories
@@ -121,20 +121,20 @@ def get_suggestions():
         if not timeframe_days:
             return jsonify({'error': 'Missing timeframe_days parameter'}), 400
         
-        # Load history data
+        #load history data
         input_data = load_history()
 
-        # Initialize the model
+        #initialize the model
         model = HabitModificationModel()
         model_path = os.path.join(current_dir, 'trained_habit_model.keras')
         scaler_path = os.path.join(current_dir, 'feature_scaler.pkl')
         
         model.load_trained_model(model_path, scaler_path)
 
-        # Get predictions from the model
+        #get predictions from the model
         total_changes = model.extrapolate_future_metrics(input_data, int(timeframe_days))
 
-        # Format the response to send to the frontend
+        #format the response to send to the frontend
         response_data = {
             "weightChange": total_changes[0],
             "cardiovascularEndurance": total_changes[1],
@@ -166,9 +166,9 @@ def search_nutrition():
     
     results = [item for item in nutrition_data 
               if query in item['name'].lower()]
-    return jsonify(results[:10])  # Limit to 10 results
+    return jsonify(results[:10])  #limit to 10 results
 
-# Load the exercises dataset
+#load the exercises dataset
 with open('Datasets/exercises.json', 'r') as f:
     exercises_data = json.load(f)
 
@@ -178,7 +178,7 @@ def search_workouts():
     if not query:
         return jsonify([])
 
-    # Search through exercises and return matches
+    #search through exercises and return matches
     matches = []
     for exercise in exercises_data:
         if query in exercise['title'].lower():
@@ -187,7 +187,7 @@ def search_workouts():
                 'type': exercise['type'],
                 'bodyPart': exercise['bodyPart']
             })
-            # Limit results to prevent overwhelming the frontend
+            #limit results to prevent overwhelming the frontend
             if len(matches) >= 10:
                 break
 

@@ -4,7 +4,6 @@ import { Ionicons } from '@expo/vector-icons';
 import { COLORS } from '../constants/colors';
 import { API_URL } from '../config';
 
-// Add this interface for the food item structure
 interface FoodItem {
   name: string;
   calories: number;

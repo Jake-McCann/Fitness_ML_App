@@ -43,13 +43,11 @@ const CreateScreen = () => {
     exercise?: { name: string; minutes: number; caloriesBurned: number }
   ) => {
     try {
-      // Calculate calories first
       if (exercise) {
         const caloriesPerHour = exercise.name === 'Weight lifting, light workout' ? 211 : 422;
         const caloriesBurned = Math.round((caloriesPerHour / 60) * exercise.minutes);
         exercise.caloriesBurned = caloriesBurned;
 
-        // Save exercise with calculated calories
         const exerciseResponse = await fetch(`${API_URL}/api/history`, {
           method: 'POST',
           headers: {
@@ -67,7 +65,6 @@ const CreateScreen = () => {
         }
       }
 
-      // Save workouts
       const workoutResponse = await fetch(`${API_URL}/api/history`, {
         method: 'POST',
         headers: {
@@ -102,7 +99,6 @@ const CreateScreen = () => {
     totalCalories: number
   ) => {
     try {
-      // Calculate total macros
       const totalMacros = foods.reduce((totals, food) => ({
         fat: totals.fat + (food.fat || 0),
         protein: totals.protein + (food.protein || 0),

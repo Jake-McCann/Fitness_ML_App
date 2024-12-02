@@ -191,27 +191,32 @@ const HistoryScreen = () => {
     );
   };
 
-  const renderDayEntry = ({ item }: { item: DayEntry }) => (
-    <TouchableOpacity 
-      style={styles.dayCard}
-      onPress={() => setExpandedDay(expandedDay === item.date ? null : item.date)}
-    >
-      <View style={styles.dateHeader}>
-        <Text style={styles.dateText}>{item.date}</Text>
-        <Text style={styles.totalCalories}>
-          Net Calories: {(item.totalCaloriesConsumed || 0) - (item.totalCaloriesBurned || 0)}
-        </Text>
-      </View>
-      
-      {expandedDay === item.date && (
-        <View style={styles.sectionsContainer}>
-          {renderSection(item.date, 'exercise', item)}
-          {renderSection(item.date, 'nutrition', item)}
-          {renderSection(item.date, 'workouts', item)}
+  const renderDayEntry = ({ item }: { item: DayEntry }) => {
+    const netCalories = ((item.totalCaloriesConsumed || 0) - (item.totalCaloriesBurned || 0)).toFixed(2);
+  
+    return (
+      <TouchableOpacity
+        style={styles.dayCard}
+        onPress={() => setExpandedDay(expandedDay === item.date ? null : item.date)}
+      >
+        <View style={styles.dateHeader}>
+          <Text style={styles.dateText}>{item.date}</Text>
+          <Text style={styles.totalCalories}>
+            Net Calories: {netCalories}
+          </Text>
         </View>
-      )}
-    </TouchableOpacity>
-  );
+  
+        {expandedDay === item.date && (
+          <View style={styles.sectionsContainer}>
+            {renderSection(item.date, 'exercise', item)}
+            {renderSection(item.date, 'nutrition', item)}
+            {renderSection(item.date, 'workouts', item)}
+          </View>
+        )}
+      </TouchableOpacity>
+    );
+  };
+  
 
   const renderNutritionTotals = (entry: DayEntry) => (
     <View style={styles.totalsContainer}>

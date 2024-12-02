@@ -69,8 +69,7 @@ const WorkoutCalculator: React.FC<WorkoutCalculatorProps> = ({ onSubmit }) => {
       Alert.alert('Error', 'Please add at least one workout');
       return;
     }
-
-    // Create the exercise entry based on intensity and number of workouts
+    
     const exercise = {
       name: intensity === 'light' 
         ? 'Weight lifting, light workout'
@@ -79,7 +78,6 @@ const WorkoutCalculator: React.FC<WorkoutCalculatorProps> = ({ onSubmit }) => {
       caloriesBurned: 0
     };
 
-    // Submit both workouts and the exercise
     onSubmit(workouts, exercise);
     setWorkouts([]);
     setSearchText('');
