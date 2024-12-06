@@ -131,7 +131,7 @@ class HabitModificationModel:
             restore_best_weights=True
         )
 
-        self.modification_model.fit(
+        history =self.modification_model.fit(
             X_normalized, y,
             epochs=100,
             batch_size=32,
@@ -142,6 +142,8 @@ class HabitModificationModel:
         #save the scaler
         with open('feature_scaler.pkl', 'wb') as f:
             pickle.dump(self.scaler, f)
+        
+        return history
 
     def predict_metric_difference_for_entry(self, entry: Dict) -> np.ndarray:
         """Predict metric differences for a single entry."""

@@ -1,6 +1,28 @@
 {
   "entries": [
     {
+      "date": "2024-12-06",
+      "exercises": [
+        {
+          "name": "Cycling, <10 mph, leisure bicycling",
+          "minutes": 60,
+          "caloriesBurned": 327
+        }
+      ],
+      "totalCaloriesBurned": 327
+    },
+    {
+      "date": "2024-12-03",
+      "exercises": [
+        {
+          "name": "Cycling, <10 mph, leisure bicycling",
+          "minutes": 80,
+          "caloriesBurned": 436
+        }
+      ],
+      "totalCaloriesBurned": 436
+    },
+    {
       "date": "2024-12-02",
       "exercises": [
         {

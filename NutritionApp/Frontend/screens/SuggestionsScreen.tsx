@@ -289,14 +289,18 @@ const SuggestionsScreen = () => {
           placeholder="Enter number of days"
         />
 
-        <Text style={styles.label}>Weight Change (lbs):</Text>
-        <TextInput
-          style={styles.input}
-          value={weightChange}
-          onChangeText={setWeightChange}
-          keyboardType="numeric"
-          placeholder="Enter target weight change"
-        />
+      <Text style={styles.label}>Weight Change (lbs):</Text>
+      <TextInput
+        style={styles.input}
+        value={weightChange}
+        onChangeText={(text) => {
+          const validatedText = text.replace(/[^-0-9]/g, ''); 
+            if (validatedText === '-' || !isNaN(Number(validatedText))) {
+              setWeightChange(validatedText);
+            }
+          }}
+        placeholder="Enter target weight change (e.g., -5 or 10)"
+      />
 
         <Text style={styles.label}>Cardiovascular Improvement (%):</Text>
         <TextInput
