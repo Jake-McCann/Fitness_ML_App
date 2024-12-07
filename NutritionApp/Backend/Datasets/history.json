@@ -1,6 +1,52 @@
 {
   "entries": [
     {
+      "date": "2024-12-07",
+      "exercises": [
+        {
+          "name": "Cycling, >20 mph, racing",
+          "minutes": 68,
+          "caloriesBurned": 1482
+        },
+        {
+          "name": "Weight lifting, body building, vigorous",
+          "minutes": 10,
+          "caloriesBurned": 70
+        },
+        {
+          "name": "Running, 5 mph (12 minute mile)",
+          "minutes": 20,
+          "caloriesBurned": 218
+        }
+      ],
+      "totalCaloriesBurned": 1770,
+      "foods": [
+        {
+          "name": "Syrups Table Blends Pancake With Butter",
+          "servings": 3,
+          "calories": 873,
+          "fat": 0.27,
+          "protein": 0,
+          "carbohydrates": 217.29000000000002,
+          "sugars": 216.75,
+          "saturatedFats": 0
+        }
+      ],
+      "totalCaloriesConsumed": 873,
+      "totalFat": 0.27,
+      "totalProtein": 0,
+      "totalCarbohydrates": 217.29000000000002,
+      "totalSugars": 216.75,
+      "totalSaturatedFats": 0,
+      "workouts": [
+        {
+          "bodyPart": "Abdominals",
+          "title": "Biceps Rope Curl",
+          "type": "Strength"
+        }
+      ]
+    },
+    {
       "date": "2024-12-06",
       "exercises": [
         {
